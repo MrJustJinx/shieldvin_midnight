@@ -15,6 +15,7 @@ ShieldVIN embeds three tamper-resistant Secure Element chips into new vehicles a
 | [One-Page Summary](https://mrjustjinx.github.io/shieldvin_midnight/shieldvin-summary.html) | Cold introduction — chips, proof flow, stakeholder access, revenue |
 | [Interactive Demo](https://mrjustjinx.github.io/shieldvin_midnight/shieldvin-demo.html) | Run a live verification for each stakeholder role and vehicle scenario |
 | [Full Whitepaper](https://mrjustjinx.github.io/shieldvin_midnight/whitepaper.html) | 15-section business plan and technical proposal |
+| [Market Opportunity](https://mrjustjinx.github.io/shieldvin_midnight/market-opportunity.html) | Toyota · BYD · Ford US adoption scenarios with live revenue modelling |
 
 ---
 
@@ -136,6 +137,12 @@ The three HTML documents are automatically deployed to GitHub Pages on every pus
 
 ---
 
+## Author
+
+**MJ Krugell** — concept originator and proposal author.
+
+---
+
 ## Status
 
 Concept proposal — draft/review stage. Targeting Midnight Network as primary audience.
@@ -144,4 +151,4 @@ Concept proposal — draft/review stage. Targeting Midnight Network as primary a
 
 ## License
 
-Concept proposal document. All content is copyright the author. Not licensed for commercial use without permission.
+© 2026 MJ Krugell. All rights reserved. Concept proposal — not licensed for commercial use without permission.
