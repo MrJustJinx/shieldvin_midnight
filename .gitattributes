@@ -1,3 +1,8 @@
 # Normalise line endings to LF in the repo, checkout as-is on all platforms
 * text=auto eol=lf
 *.bat text eol=crlf
+
+# Compact — Midnight Network ZK smart contract DSL
+# Not yet in GitHub Linguist's language database (new language as of 2026)
+# Marked as detectable so it appears in repository file listings
+*.compact linguist-detectable=true linguist-language=Compact
