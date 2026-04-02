@@ -113,7 +113,7 @@ for col, w in [(1,26),(2,14),(3,14),(4,14),(5,14),(6,14),(7,14),(8,14)]:
 
 title_cell(ws1, 1, 1, 'ShieldVIN — Vehicle Identity on Midnight Network', 8, DARK_BG, 14)
 subtitle_cell(ws1, 2, 1, 'Financial Model Overview  |  2026–2030  |  All figures in USD unless stated', 8, PURPLE_LIGHT, 10, PURPLE_MID)
-spacer(ws1, 3)
+subtitle_cell(ws1, 3, 1, '  ⚠  SPECULATIVE PROJECTIONS — Figures are indicative only. Actual fees, adoption rates, and revenue vary by region, regulatory environment, and OEM negotiation outcomes. Not financial forecasts.', 8, WARN_BG, 9, WARN)
 
 # ── KEY METRICS ──
 subtitle_cell(ws1, 4, 1, '  KEY MARKET METRICS', 4, DARK_BG, 10, WHITE)
@@ -156,10 +156,12 @@ ws1.row_dimensions[14].height = 22
 header_row(ws1, 15, ['Revenue Stream', 'Year 1\n2026', 'Year 2\n2027', 'Year 3\n2028', 'Year 4\n2029', 'Year 5\n2030', 'CAGR', 'Notes'], bg=PURPLE_MID)
 
 rev_streams = [
-    ('Vehicle Identity Token Minting', 0.10, 0.80, 4.20, 18.50, 58.00, 'Per-vehicle fee at manufacture. Volume tiers $8–$25/vehicle.'),
-    ('Verification API Access', 0.05, 0.30, 1.80, 9.20, 31.00, 'Insurance, dealers, fleet operators. $0.10–$2.50/query.'),
-    ('Insurance & Enterprise Partnerships', 0.00, 0.10, 0.90, 5.40, 19.00, 'Shared claim savings + data products.'),
-    ('Total Revenue', 0.15, 1.20, 6.90, 33.10, 108.00, ''),
+    ('Vehicle Identity Token Minting', 0.18, 1.00, 5.20, 18.00, 42.00, 'Per-vehicle fee. Volume tiers: Ultra-scale (3M+/yr) $3–5, Large OEM $8–12, Mid $12–18, Small $20–25/vehicle.'),
+    ('Verification API — Insurer / Lender / Fleet', 0.05, 0.25, 1.50, 8.00, 25.00, 'Per-query. Status check $0.15–0.35, Ownership verify $1.75–2.50, Tamper check $6–12. All billed in fiat — no crypto wallet required.'),
+    ('Dealer Portal Subscription', 0.00, 0.60, 3.50, 14.90, 39.60, 'Monthly SaaS per dealership. $199–$599/month by tier. Card / direct debit billing.'),
+    ('Consumer Platform — Private Seller', 0.00, 0.05, 0.35, 1.60, 6.30, '$5 per private ownership transfer + optional owner app premium. Fiat only (card / Apple Pay / Google Pay).'),
+    ('Enterprise & Government', 0.00, 0.10, 2.00, 5.50, 18.00, 'Insurance claim-savings partnerships + government integration contracts (Model B) + enterprise data products.'),
+    ('Total Revenue', 0.23, 2.00, 12.55, 48.00, 131.00, ''),
 ]
 for i, (stream, y1, y2, y3, y4, y5, note) in enumerate(rev_streams):
     r = i + 16
@@ -201,15 +203,15 @@ for i, (stream, y1, y2, y3, y4, y5, note) in enumerate(rev_streams):
     ws1.cell(r, 8).alignment = left()
     ws1.row_dimensions[r].height = 22
 
-spacer(ws1, 21)
+spacer(ws1, 23)
 
 # ── INVESTMENT REQUIRED ──
-subtitle_cell(ws1, 22, 1, '  INVESTMENT REQUIREMENTS', 4, DARK_BG, 10, WHITE)
+subtitle_cell(ws1, 24, 1, '  INVESTMENT REQUIREMENTS', 4, DARK_BG, 10, WHITE)
 for col in range(5, 9):
-    ws1.cell(row=22, column=col).fill = fill(DARK_BG)
+    ws1.cell(row=24, column=col).fill = fill(DARK_BG)
 
-header_row(ws1, 23, ['Phase', 'Period', 'Investment Required', 'Key Milestones', ''], bg=PURPLE_MID)
-ws1.merge_cells('D23:E23')
+header_row(ws1, 25, ['Phase', 'Period', 'Investment Required', 'Key Milestones', ''], bg=PURPLE_MID)
+ws1.merge_cells('D25:E25')
 
 investments = [
     ('Phase 1 — PoC & Consortium', 'Months 0–12', '$3M – $5M', 'Midnight testnet smart contract, key ceremony PoC, founding OEM + insurer MoU'),
@@ -220,7 +222,7 @@ investments = [
 ]
 
 for i, (phase, period, invest, milestone) in enumerate(investments):
-    r = i + 24
+    r = i + 26
     is_total = 'Total' in phase
     bg_color = CYAN_LIGHT if is_total else (LIGHT_ROW if i % 2 == 0 else LIGHT_ROW2)
     
@@ -267,10 +269,10 @@ for col in range(5, 8): ws2.cell(4, col).fill = fill(PURPLE_MID)
 header_row(ws2, 5, ['Assumption', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Unit'], bg=PURPLE_MID)
 
 minting_inputs = [
-    ('Global new vehicle production', 80_000_000, 82_000_000, 84_000_000, 86_000_000, 88_000_000, 'Units/year'),
-    ('% of production enrolled in system', 0.001, 0.005, 0.02, 0.08, 0.25, '% (input)'),
-    ('Vehicles enrolled (calculated)', '=B7*B8', '=C7*C8', '=D7*D8', '=E7*E8', '=F7*F8', 'Units'),
-    ('Average fee per token minted ($)', 12, 12, 11, 10, 9, 'USD (input)'),
+    ('Global new vehicle production', 80_000_000, 82_000_000, 84_000_000, 86_000_000, 88_000_000, 'Units/year (OICA estimate)'),
+    ('% of production enrolled this year', 0.0001, 0.0008, 0.0048, 0.0208, 0.0733, '% (input) — reflects phased OEM adoption'),
+    ('New vehicles enrolled this year', '=B7*B8', '=C7*C8', '=D7*D8', '=E7*E8', '=F7*F8', 'Units'),
+    ('Blended minting fee per vehicle ($)', 22, 15, 13, 10, 6.50, 'USD (input) — OEM tier mix: Ultra-scale $3–5, Large $8–12, Mid $12–18, Small $20–25'),
     ('Minting Revenue', '=B9*B10/1000000', '=C9*C10/1000000', '=D9*D10/1000000', '=E9*E10/1000000', '=F9*F10/1000000', '$M'),
 ]
 
@@ -310,17 +312,17 @@ for i, (label, y1, y2, y3, y4, y5, unit) in enumerate(minting_inputs):
 spacer(ws2, 12)
 
 # ── API REVENUE ASSUMPTIONS ──
-subtitle_cell(ws2, 13, 1, '  STREAM 2: VERIFICATION API ACCESS', 4, CYAN_DARK, 10, WHITE)
+subtitle_cell(ws2, 13, 1, '  STREAM 2: VERIFICATION API — INSURER / LENDER / FLEET  (all billed in fiat — no crypto wallet required)', 4, CYAN_DARK, 10, WHITE)
 for col in range(5, 8): ws2.cell(13, col).fill = fill(CYAN_DARK)
 
 header_row(ws2, 14, ['Assumption', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Unit'], bg=CYAN_DARK)
 
 api_inputs = [
-    ('Active enrolled vehicles (cumulative)', '=B9', '=B9+C9', '=B15+D9', '=C15+E9', '=D15+F9', 'Units'),
-    ('Avg verifications per vehicle per year', 4, 5, 6, 7, 8, 'Queries/vehicle/yr'),
-    ('Total verification queries (M)', '=B15*B16/1000000', '=C15*C16/1000000', '=D15*D16/1000000', '=E15*E16/1000000', '=F15*F16/1000000', 'Millions'),
-    ('% queries paid (excl. govt/police)', 0.60, 0.62, 0.65, 0.68, 0.70, '% (input)'),
-    ('Average price per paid query ($)', 0.18, 0.20, 0.22, 0.25, 0.28, 'USD (input)'),
+    ('Cumulative enrolled vehicles (all years)', '=B9', '=B9+C9', '=B15+D9', '=C15+E9', '=D15+F9', 'Units — fleet grows each year'),
+    ('Avg paid API queries per vehicle per year', 3, 4, 5, 5, 4, 'Queries/vehicle/yr — insurer renewals + lender checks + fleet ops'),
+    ('Total paid queries (M)', '=B15*B16/1000000', '=C15*C16/1000000', '=D15*D16/1000000', '=E15*E16/1000000', '=F15*F16/1000000', 'Millions'),
+    ('% billed in fiat (no crypto required)', 1.00, 1.00, 1.00, 1.00, 1.00, '% — ShieldVIN absorbs DUST cost; clients pay by card or invoice'),
+    ('Blended fee per paid query ($)', 2.00, 2.00, 2.00, 2.00, 1.60, 'USD (input) — ownership verify $1.75–2.50, tamper check $6–12, status $0.15–0.35'),
     ('API Revenue', '=B17*B18*B19/1', '=C17*C18*C19/1', '=D17*D18*D19/1', '=E17*E18*E19/1', '=F17*F18*F19/1', '$M'),
 ]
 
@@ -358,17 +360,17 @@ for i, (label, y1, y2, y3, y4, y5, unit) in enumerate(api_inputs):
 spacer(ws2, 22)
 
 # ── ENTERPRISE REVENUE ──
-subtitle_cell(ws2, 23, 1, '  STREAM 3: INSURANCE & ENTERPRISE PARTNERSHIPS', 4, PURPLE_MID, 10, WHITE)
+subtitle_cell(ws2, 23, 1, '  STREAM 5: ENTERPRISE & GOVERNMENT  (insurance partnerships + govt integration contracts + data products)', 4, PURPLE_MID, 10, WHITE)
 for col in range(5, 8): ws2.cell(23, col).fill = fill(PURPLE_MID)
 
 header_row(ws2, 24, ['Assumption', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Unit'], bg=PURPLE_MID)
 
 enterprise_data = [
-    ('Major insurer partners', 0, 1, 2, 4, 7, 'Count'),
-    ('Annual contract value per insurer ($M)', 0, 0.10, 0.25, 0.75, 1.50, '$M (input)'),
-    ('Insurance partnership revenue', '=B25*B26', '=C25*C26', '=D25*D26', '=E25*E26', '=F25*F26', '$M'),
-    ('Enterprise data product revenue', 0.00, 0.00, 0.25, 1.15, 4.50, '$M (input)'),
-    ('Enterprise & Insurance Total', '=B27+B28', '=C27+C28', '=D27+D28', '=E27+E28', '=F27+F28', '$M'),
+    ('Insurance partnership revenue ($M)', 0.00, 0.10, 0.80, 3.50, 10.00, '$M (input) — revenue share from demonstrated fraud claim savings'),
+    ('Government integration contracts ($M)', 0.00, 0.00, 0.90, 2.50, 8.00, '$M (input) — Model B: integration fee + annual maintenance per jurisdiction. Model C (regulatory mandate) is the long-term goal.'),
+    ('Enterprise data products ($M)', 0.00, 0.00, 0.00, 0.50, 2.00, '$M (input) — anonymised aggregate data to automotive research, safety regulators, urban planners'),
+    ('', '', '', '', '', '', ''),
+    ('Enterprise & Government Total', '=B25+B26+B27', '=C25+C26+C27', '=D25+D26+D27', '=E25+E26+E27', '=F25+F26+F27', '$M'),
 ]
 
 for i, (label, y1, y2, y3, y4, y5, unit) in enumerate(enterprise_data):
@@ -406,10 +408,12 @@ for col in range(5, 8): ws2.cell(32, col).fill = fill(DARK_BG)
 header_row(ws2, 33, ['Revenue Stream', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5', 'Notes'], bg=DARK_BG)
 
 summary_rows = [
-    ('Minting Revenue ($M)', '=B11', '=C11', '=D11', '=E11', '=F11', 'From Stream 1 above'),
-    ('API Verification Revenue ($M)', '=B20', '=C20', '=D20', '=E20', '=F20', 'From Stream 2 above'),
-    ('Insurance & Enterprise ($M)', '=B29', '=C29', '=D29', '=E29', '=F29', 'From Stream 3 above'),
-    ('TOTAL REVENUE ($M)', '=B34+B35+B36', '=C34+C35+C36', '=D34+D35+D36', '=E34+E35+E36', '=F34+F35+F36', 'Consolidated'),
+    ('Stream 1 — Minting Revenue ($M)', '=B11', '=C11', '=D11', '=E11', '=F11', 'From Stream 1 above'),
+    ('Stream 2 — Verification API / Insurer / Lender / Fleet ($M)', '=B20', '=C20', '=D20', '=E20', '=F20', 'From Stream 2 above'),
+    ('Stream 3 — Dealer Portal Subscriptions ($M)', 0.00, 0.60, 3.50, 14.90, 39.60, '$199–$599/month SaaS. 10,000 dealers by Yr 5. Card / direct debit.'),
+    ('Stream 4 — Consumer Platform / Private Seller ($M)', 0.00, 0.05, 0.35, 1.60, 6.30, '$5 per ownership transfer + owner app. Fiat only.'),
+    ('Stream 5 — Enterprise & Government ($M)', '=B29', '=C29', '=D29', '=E29', '=F29', 'From Stream 5 above'),
+    ('TOTAL REVENUE ($M)', '=B34+B35+B36+B37+B38', '=C34+C35+C36+C37+C38', '=D34+D35+D36+D37+D38', '=E34+E35+E36+E37+E38', '=F34+F35+F36+F37+F38', 'All 5 streams consolidated'),
 ]
 
 for i, (label, y1, y2, y3, y4, y5, note) in enumerate(summary_rows):
@@ -709,29 +713,35 @@ for col, w in [(1,32),(2,16),(3,16),(4,16),(5,22)]:
 
 title_cell(ws6, 1, 1, 'ShieldVIN — Scenario Analysis', 5, DARK_BG, 14)
 subtitle_cell(ws6, 2, 1, 'Conservative / Base / Aggressive — switchable assumptions  |  All revenue in USD Millions', 5, PURPLE_LIGHT, 10, PURPLE_MID)
-spacer(ws6, 3)
+subtitle_cell(ws6, 3, 1, '  FIAT PAYMENT MODEL: All client-facing fees are billed in USD/GBP/EUR via card, direct debit, or invoice. ShieldVIN holds a DUST reserve and absorbs all on-chain transaction costs internally. No crypto wallet required from any client.', 5, CYAN_LIGHT, 9, CYAN_DARK)
+subtitle_cell(ws6, 4, 1, '  ⚠  SPECULATIVE PROJECTIONS: Figures are indicative estimates. Actual revenue varies materially by region, regulatory outcome, OEM adoption, and market conditions. Not a financial forecast.', 5, WARN_BG, 9, WARN)
+spacer(ws6, 5)
 
 # ── ASSUMPTION INPUTS ──
-subtitle_cell(ws6, 4, 1, '  SCENARIO ASSUMPTIONS  (blue cells are inputs)', 5, DARK_BG, 10, WHITE)
-ws6.row_dimensions[4].height = 22
+subtitle_cell(ws6, 6, 1, '  SCENARIO ASSUMPTIONS  (blue cells are inputs)', 5, DARK_BG, 10, WHITE)
+ws6.row_dimensions[6].height = 22
 
-header_row(ws6, 5, ['Assumption', 'Conservative', 'Base Case', 'Aggressive', 'Notes'], bg=PURPLE_MID)
+header_row(ws6, 7, ['Assumption', 'Conservative', 'Base Case', 'Aggressive', 'Notes'], bg=PURPLE_MID)
 
 BLUE_INPUT  = '1E3A8A'
 BLUE_BG     = 'DBEAFE'
 
 assumptions = [
-    ('Year 5 enrolled vehicles (M units)',         0.8,   2.0,   5.0,   'Global new vehicle production ~80M/yr. Conservative = 1%, Base = 2.5%, Aggressive = 6.25%'),
-    ('Blended minting fee per vehicle (USD)',       8.00,  12.00, 18.00, 'Volume tier pricing. Low = entry/loss-leader, High = premium OEM tier'),
-    ('API queries per enrolled vehicle per year',  3.0,   6.0,   10.0,  'Avg queries across insurer, police, dealer, owner channels'),
-    ('Blended API fee per query (USD)',            0.12,  0.22,  0.40,  'Mix of $0.10 police/govt, $0.25 insurer, $2.50 enterprise'),
-    ('Enterprise partnership revenue Year 5 (USD M)', 8.0, 19.0, 42.0, 'Revenue share from insurance claim savings + data products'),
-    ('DUST fee per transaction (USD equiv.)',      0.01,  0.03,  0.08,  'Operational cost. NIGHT/DUST market rate sensitivity. Not a revenue item.'),
-    ('Year 5 DUST cost (USD M, total fleet)',      0.30,  1.50,  8.00,  'Estimated total on-chain activity cost. Sensitive to NIGHT price.'),
+    ('Year 5 enrolled vehicles (M units — cumulative fleet)',  0.8,   3.5,   8.8,   'Global production ~80M/yr. Conservative = <1%, Base = ~4%, Aggressive = ~11% cumulative'),
+    ('Blended minting fee per vehicle (USD)',                  5.00,  6.50,  10.00, 'Volume tier: Ultra-scale $3–5, Large OEM $8–12, Mid $12–18, Small $20–25. Blended reflects OEM mix.'),
+    ('Dealer subscribers by Year 5 (count)',                   3000,  10000, 20000, 'Dealers subscribe when enrolled vehicles in their market reach tipping point'),
+    ('Average dealer monthly subscription (USD)',              250,   330,   450,   'Small dealer $199, mid $349, large $599. Blended avg depends on mix.'),
+    ('Consumer platform transfers by Year 5 (M per year)',     0.10,  1.05,  2.50,  '~10-12% of cumulative fleet changes hands via private sale annually'),
+    ('Private transfer fee (USD)',                             5.00,  5.00,  5.00,  'Fixed at $5 per private ownership transfer — market-dependent'),
+    ('Enterprise & Govt revenue Year 5 (USD M)',               5.00,  18.00, 40.00, 'Insurance savings share + govt integration contracts + data products'),
+    ('API queries per enrolled vehicle per year',              2.0,   4.5,   7.0,   'Insurer renewals + lender checks + fleet ops — excludes govt (covered by contract)'),
+    ('Blended API fee per query (USD)',                        1.60,  1.90,  2.50,  'Ownership verify $1.75–2.50, tamper check $6–12, status $0.15–0.35'),
+    ('DUST fee per transaction (USD equiv.)',                  0.01,  0.03,  0.08,  'Operational cost absorbed by ShieldVIN. NIGHT/DUST market sensitivity. NOT a revenue item.'),
+    ('Year 5 DUST cost (USD M, total fleet)',                  0.30,  1.50,  8.00,  'Estimated on-chain activity cost. Pre-purchase DUST in bulk to hedge price risk.'),
 ]
 
 for i, (label, cons, base, aggr, note) in enumerate(assumptions):
-    r = i + 6
+    r = i + 8
     row_bg = LIGHT_ROW if i % 2 == 0 else LIGHT_ROW2
 
     ws6.cell(r, 1, label).font = font(color=DARK_TEXT)
@@ -753,41 +763,51 @@ for i, (label, cons, base, aggr, note) in enumerate(assumptions):
     ws6.row_dimensions[r].height = 32
 
 # ── CALCULATED OUTPUTS ──
-spacer(ws6, 14)
-subtitle_cell(ws6, 15, 1, '  YEAR 5 CALCULATED OUTPUTS  (formulas reference assumption cells above)', 5, DARK_BG, 10, WHITE)
-ws6.row_dimensions[15].height = 22
-header_row(ws6, 16, ['Output', 'Conservative', 'Base Case', 'Aggressive', 'Formula Basis'], bg=PURPLE_MID)
+spacer(ws6, 20)
+subtitle_cell(ws6, 21, 1, '  YEAR 5 CALCULATED OUTPUTS  (formulas reference assumption cells above)', 5, DARK_BG, 10, WHITE)
+ws6.row_dimensions[21].height = 22
+header_row(ws6, 22, ['Output', 'Conservative', 'Base Case', 'Aggressive', 'Formula Basis'], bg=PURPLE_MID)
 
-# Row references: assumptions start at row 6
-# B6=enrolled vehicles (M), B7=minting fee, B8=queries/vehicle, B9=API fee, B10=enterprise, B11=DUST/tx, B12=DUST total cost
+# Row references: assumptions start at row 8
+# Row 8=enrolled vehicles (M cumulative), Row 9=minting fee, Row 10=dealer count,
+# Row 11=dealer monthly sub, Row 12=consumer transfers (M/yr), Row 13=transfer fee,
+# Row 14=enterprise & govt, Row 15=API queries/vehicle, Row 16=blended API fee,
+# Row 17=DUST/tx, Row 18=DUST total cost
 # Columns: B=Conservative, C=Base, D=Aggressive
+# Output rows start at 23 (i=0 → r=23)
 
 outputs = [
-    ('Minting Revenue Year 5 (USD M)',
-     '=B6*1000000*B7/1000000', '=C6*1000000*C7/1000000', '=D6*1000000*D7/1000000',
-     'Enrolled vehicles × minting fee per vehicle'),
-    ('API Revenue Year 5 (USD M)',
-     '=B6*1000000*B8*B9/1000000', '=C6*1000000*C8*C9/1000000', '=D6*1000000*D8*D9/1000000',
+    ('Stream 1 — Minting Revenue Year 5 (USD M)',
+     '=B8*1000000*B9/1000000', '=C8*1000000*C9/1000000', '=D8*1000000*D9/1000000',
+     'Cumulative enrolled fleet × blended minting fee'),
+    ('Stream 2 — API Revenue Year 5 (USD M)',
+     '=B8*1000000*B15*B16/1000000', '=C8*1000000*C15*C16/1000000', '=D8*1000000*D15*D16/1000000',
      'Enrolled vehicles × queries/vehicle × fee/query'),
-    ('Enterprise Revenue Year 5 (USD M)',
-     '=B10', '=C10', '=D10',
-     'Direct input — partnership revenue'),
+    ('Stream 3 — Dealer Subscriptions Year 5 (USD M)',
+     '=B10*B11*12/1000000', '=C10*C11*12/1000000', '=D10*D11*12/1000000',
+     'Dealer count × avg monthly sub × 12 months'),
+    ('Stream 4 — Consumer Platform Year 5 (USD M)',
+     '=B12*1000000*B13/1000000', '=C12*1000000*C13/1000000', '=D12*1000000*D13/1000000',
+     'Annual transfer volume × $5 fee'),
+    ('Stream 5 — Enterprise & Government Year 5 (USD M)',
+     '=B14', '=C14', '=D14',
+     'Direct input — insurance + govt contracts + data products'),
     ('Total Revenue Year 5 (USD M)',
-     '=B17+B18+B19', '=C17+C18+C19', '=D17+D18+D19',
-     'Sum of all three streams'),
+     '=B23+B24+B25+B26+B27', '=C23+C24+C25+C26+C27', '=D23+D24+D25+D26+D27',
+     'Sum of all 5 streams'),
     ('DUST Operational Cost Year 5 (USD M)',
-     '=B12', '=C12', '=D12',
-     'Estimated on-chain activity cost — not revenue'),
+     '=B18', '=C18', '=D18',
+     'Estimated on-chain activity cost — absorbed by ShieldVIN, not passed to clients'),
     ('Net Revenue after DUST Cost (USD M)',
-     '=B20-B21', '=C20-C21', '=D20-D21',
+     '=B28-B29', '=C28-C29', '=D28-D29',
      'Total Revenue minus DUST fees'),
     ('Revenue per Enrolled Vehicle (USD)',
-     '=IF(B6>0,(B20/B6),0)', '=IF(C6>0,(C20/C6),0)', '=IF(D6>0,(D20/D6),0)',
-     'Net revenue per enrolled vehicle — sanity check vs $25 blended target'),
+     '=IF(B8>0,(B28/B8),0)', '=IF(C8>0,(C28/C8),0)', '=IF(D8>0,(D28/D8),0)',
+     'Net revenue per enrolled vehicle — sanity check'),
 ]
 
 for i, (label, cons_f, base_f, aggr_f, note) in enumerate(outputs):
-    r = i + 17
+    r = i + 23
     is_total = 'Total Revenue' in label or 'Net Revenue' in label
     row_bg = DARK_BG if is_total else (LIGHT_ROW if i % 2 == 0 else LIGHT_ROW2)
     fg = WHITE if is_total else DARK_TEXT
@@ -813,9 +833,9 @@ for i, (label, cons_f, base_f, aggr_f, note) in enumerate(outputs):
     ws6.row_dimensions[r].height = 22
 
 # ── DUST SENSITIVITY NOTE ──
-spacer(ws6, 25)
-subtitle_cell(ws6, 26, 1, '  DUST TOKEN ECONOMICS — SENSITIVITY NOTE', 5, DARK_BG, 10, WHITE)
-ws6.row_dimensions[26].height = 22
+spacer(ws6, 33)
+subtitle_cell(ws6, 34, 1, '  DUST TOKEN ECONOMICS — SENSITIVITY NOTE', 5, DARK_BG, 10, WHITE)
+ws6.row_dimensions[34].height = 22
 
 dust_notes = [
     ('DUST is Midnight Network\'s transaction fee token. Every vehicle mint, ownership transfer, verification query, and lifecycle event consumes DUST.',
@@ -830,16 +850,16 @@ dust_notes = [
      'Strategic value to Midnight — not just a cost'),
 ]
 
-header_row(ws6, 27, ['Note', 'Implication'], bg=PURPLE_MID)
-ws6.merge_cells('A27:C27')
-ws6.cell(27, 4).fill = ws6.cell(27, 1).fill
-ws6.cell(27, 4).font = ws6.cell(27, 1).font
-ws6.cell(27, 4).border = thin_border()
-ws6.cell(27, 5).fill = ws6.cell(27, 1).fill
-ws6.cell(27, 5).border = thin_border()
+header_row(ws6, 35, ['Note', 'Implication'], bg=PURPLE_MID)
+ws6.merge_cells('A35:C35')
+ws6.cell(35, 4).fill = fill(PURPLE_MID)
+ws6.cell(35, 4).font = font(bold=True, color=WHITE, size=10)
+ws6.cell(35, 4).border = thin_border()
+ws6.cell(35, 5).fill = fill(PURPLE_MID)
+ws6.cell(35, 5).border = thin_border()
 
 for i, (note_text, implication) in enumerate(dust_notes):
-    r = i + 28
+    r = i + 36
     row_bg = LIGHT_ROW if i % 2 == 0 else LIGHT_ROW2
     ws6.cell(r, 1, note_text).font = font(color=DARK_TEXT, size=9)
     ws6.merge_cells(f'A{r}:C{r}')
@@ -872,16 +892,22 @@ header_row(ws7, 4, ['Revenue Stream', 'Year 1\n2026', 'Year 2\n2027', 'Year 3\n2
 streams_chart = [
     ('Vehicle Identity Token Minting',
      "='Revenue Model'!B34", "='Revenue Model'!C34", "='Revenue Model'!D34", "='Revenue Model'!E34", "='Revenue Model'!F34",
-     'Per-vehicle fee at manufacture'),
-    ('Verification API Access',
+     'Per-vehicle fee. Volume tiers $3–25/vehicle.'),
+    ('Verification API — Insurer / Lender / Fleet',
      "='Revenue Model'!B35", "='Revenue Model'!C35", "='Revenue Model'!D35", "='Revenue Model'!E35", "='Revenue Model'!F35",
-     'Insurance, dealers, fleet operators'),
-    ('Insurance & Enterprise',
+     'Per-query. $0.15–$2.50 by query type. Fiat billing.'),
+    ('Dealer Portal Subscriptions',
      "='Revenue Model'!B36", "='Revenue Model'!C36", "='Revenue Model'!D36", "='Revenue Model'!E36", "='Revenue Model'!F36",
-     'Partnership & data product revenue'),
+     'Monthly SaaS: $199–$599/month per dealership.'),
+    ('Consumer Platform — Private Seller',
+     "='Revenue Model'!B37", "='Revenue Model'!C37", "='Revenue Model'!D37", "='Revenue Model'!E37", "='Revenue Model'!F37",
+     '$5 per ownership transfer. Fiat only.'),
+    ('Enterprise & Government',
+     "='Revenue Model'!B38", "='Revenue Model'!C38", "='Revenue Model'!D38", "='Revenue Model'!E38", "='Revenue Model'!F38",
+     'Insurance partnerships + govt contracts + data products.'),
     ('TOTAL REVENUE',
-     '=B5+B6+B7', '=C5+C6+C7', '=D5+D6+D7', '=E5+E6+E7', '=F5+F6+F7',
-     'All three streams combined'),
+     '=B5+B6+B7+B8+B9', '=C5+C6+C7+C8+C9', '=D5+D6+D7+D8+D9', '=E5+E6+E7+E8+E9', '=F5+F6+F7+F8+F9',
+     'All 5 streams consolidated'),
 ]
 
 for i, (stream, y1, y2, y3, y4, y5, note) in enumerate(streams_chart):
@@ -909,30 +935,30 @@ for i, (stream, y1, y2, y3, y4, y5, note) in enumerate(streams_chart):
     ws7.cell(r, 7).alignment = left()
     ws7.row_dimensions[r].height = 22 if not is_total else 26
 
-spacer(ws7, 10)
+spacer(ws7, 12)
 
 # ── STACKED BAR CHART ──
 chart = BarChart()
 chart.type = "col"
 chart.grouping = "stacked"
 chart.overlap = 100
-chart.title = "ShieldVIN — Revenue Build 2026–2030 (USD Millions)"
+chart.title = "ShieldVIN — Revenue Build 2026–2030 (USD Millions) — 5 Streams"
 chart.style = 10
 chart.y_axis.title = "Revenue (USD Millions)"
 chart.x_axis.title = "Year"
-chart.width = 22
+chart.width = 24
 chart.height = 14
 
-# Each row (5-7) is one revenue stream; cols B-F are years 1-5
+# Each row (5-9) is one revenue stream; cols B-F are years 1-5
 # Col A of each row is the series title
-data_with_titles = Reference(ws7, min_col=1, max_col=6, min_row=5, max_row=7)
+data_with_titles = Reference(ws7, min_col=1, max_col=6, min_row=5, max_row=9)
 chart.add_data(data_with_titles, from_rows=True, titles_from_data=True)
 
 # Year categories from row 4, cols B-F
 cats = Reference(ws7, min_col=2, max_col=6, min_row=4)
 chart.set_categories(cats)
 
-ws7.add_chart(chart, "A12")
+ws7.add_chart(chart, "A14")
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -1059,10 +1085,10 @@ dv_enrolled_m = DataValidation(
     promptTitle='Enrolled Vehicles (M)',
     prompt='Year 5 enrolled vehicles in millions (0.01–80)',
 )
-dv_enrolled_m.sqref = 'B6:D6'
+dv_enrolled_m.sqref = 'B8:D8'
 ws6.add_data_validation(dv_enrolled_m)
 
-# Row 7: Minting fee — 1 to 50
+# Row 9: Minting fee — 1 to 50
 dv_sc_mint = DataValidation(
     type='decimal', operator='between', formula1=1, formula2=50,
     allow_blank=True,
@@ -1073,10 +1099,10 @@ dv_sc_mint = DataValidation(
     promptTitle='Minting Fee (USD)',
     prompt='Blended minting fee per vehicle in USD (1–50)',
 )
-dv_sc_mint.sqref = 'B7:D7'
+dv_sc_mint.sqref = 'B9:D9'
 ws6.add_data_validation(dv_sc_mint)
 
-# Row 8: API queries per vehicle — 1 to 50
+# Row 15: API queries per vehicle — 1 to 50
 dv_sc_queries = DataValidation(
     type='decimal', operator='between', formula1=1, formula2=50,
     allow_blank=True,
@@ -1087,10 +1113,10 @@ dv_sc_queries = DataValidation(
     promptTitle='Queries per Vehicle',
     prompt='Annual API queries per enrolled vehicle (1–50)',
 )
-dv_sc_queries.sqref = 'B8:D8'
+dv_sc_queries.sqref = 'B15:D15'
 ws6.add_data_validation(dv_sc_queries)
 
-# Row 9: API fee per query — 0.01 to 10
+# Row 16: API fee per query — 0.01 to 10
 dv_sc_api_fee = DataValidation(
     type='decimal', operator='between', formula1=0.01, formula2=10,
     allow_blank=True,
@@ -1101,7 +1127,7 @@ dv_sc_api_fee = DataValidation(
     promptTitle='API Fee per Query (USD)',
     prompt='Blended average fee per verification query ($0.01–$10)',
 )
-dv_sc_api_fee.sqref = 'B9:D9'
+dv_sc_api_fee.sqref = 'B16:D16'
 ws6.add_data_validation(dv_sc_api_fee)
 
 

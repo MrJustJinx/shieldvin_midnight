@@ -2505,47 +2505,236 @@ footer {
 <section id="business">
   <div class="section-label">09 — Business Model</div>
   <h2>How the Business Works</h2>
-  <p class="lead">The system operates on a consortium and licensing model, with revenue streams from manufacturers and verification users. DUST transaction fees on Midnight are consumed as an operational cost — driving consistent on-chain activity that benefits the Midnight Network economy. No single party owns the data; all parties pay for the access they use.</p>
+  <p class="lead">ShieldVIN generates revenue across five distinct streams: a one-time vehicle identity token minting fee, a verification API for insurers and lenders, monthly dealer portal subscriptions, a consumer platform for private ownership transfers, and enterprise and government contracts. All client-facing fees are billed in standard fiat currency — no crypto wallet is required from any user. DUST transaction costs are an operational expense absorbed by ShieldVIN internally. Customers reach ShieldVIN through three surfaces: the API for enterprise integration, the dealer portal for registered dealers, and the consumer platform for private sellers and owners.</p>
+  <div style="margin:1rem 0 1.5rem; padding:0.85rem 1.25rem; background:rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.3); border-left:3px solid #f59e0b; border-radius:8px; font-size:0.82rem; color:var(--text-secondary);">
+    <strong style="color:#f59e0b;">Speculative projections:</strong> All revenue figures are indicative estimates based on comparable market pricing and phased adoption assumptions. Actual fees, adoption rates, and revenue vary materially by region, regulatory environment, and OEM negotiation outcomes. Figures illustrate the commercial opportunity — they are not financial forecasts.
+  </div>
 
-  <div class="grid-3" style="margin-bottom:2rem;">
+  <!-- Revenue Stream 1: Minting Fee -->
+  <div class="grid-2" style="margin-bottom:2rem;">
     <div class="card">
-      <div class="card-icon">💰</div>
+      <div class="card-icon">🪙</div>
       <h3>Revenue Stream 1</h3>
-      <h4>Manufacturer Licensing</h4>
-      <p>A per-vehicle fee at the point of manufacture for each Vehicle Identity Token minted. At scale, this is a small cost per unit but represents significant volume given global new vehicle production of approximately 80 million units per year.</p>
-      <p>Estimated range: $8–$25 per vehicle minted, depending on volume tiers.</p>
+      <h4>Vehicle Identity Token Minting Fee</h4>
+      <p>A one-time fee charged to the manufacturer at the point of minting the Vehicle Identity Token onto Midnight Network. Volume-tiered pricing reflects OEM scale — the system is designed so that the largest manufacturers, who drive the most on-chain activity for Midnight, receive the most competitive rate.</p>
+      <div class="safe-specs" style="margin-top:1rem;">
+        <div class="spec-row"><span class="spec-key">Ultra-scale OEM (3M+ vehicles/yr)</span><span class="spec-val">$3–$5 per vehicle at VIT mint — Toyota / BYD tier</span></div>
+        <div class="spec-row"><span class="spec-key">Large OEM (1M–3M vehicles/yr)</span><span class="spec-val">$8–$12 per vehicle</span></div>
+        <div class="spec-row"><span class="spec-key">Mid OEM (100K–1M vehicles/yr)</span><span class="spec-val">$12–$18 per vehicle</span></div>
+        <div class="spec-row"><span class="spec-key">Small OEM / Early adopter (&lt;100K/yr)</span><span class="spec-val">$20–$25 per vehicle</span></div>
+        <div class="spec-row"><span class="spec-key">Payment</span><span class="spec-val">Fiat invoice (USD/GBP/EUR) — no crypto wallet required. ShieldVIN holds DUST reserve internally.</span></div>
+        <div class="spec-row"><span class="spec-key">vs HPI</span><span class="spec-val">HPI charges £9.99–£19.99 per check, recurring. ShieldVIN's fee is one-time and covers the vehicle's lifetime identity.</span></div>
+      </div>
     </div>
+
+    <!-- Revenue Stream 2: Verification API -->
     <div class="card">
       <div class="card-icon">📡</div>
       <h3>Revenue Stream 2</h3>
-      <h4>Verification API Access</h4>
-      <p>Insurance companies, dealers, fleet managers, and others pay for API access to run verification queries. Tiered pricing based on query volume and data access level. Law enforcement and government access provided under a subsidised government rate or via national government contracts.</p>
-      <p>Estimated range: $0.10–$2.50 per query based on volume and tier.</p>
-    </div>
-    <div class="card">
-      <div class="card-icon">🌐</div>
-      <h3>Network Value</h3>
-      <h4>DUST Economy Contribution</h4>
-      <p>Every vehicle mint, ownership transfer, and verification query consumes DUST as the Midnight Network transaction fee. At tens of millions of events per year, ShieldVIN becomes one of Midnight's largest institutional on-chain activity drivers — not a revenue source for ShieldVIN, but a sustained demand signal for the network's token economy.</p>
+      <h4>Verification API — Insurer / Lender / Fleet</h4>
+      <p>Per-query billing for insurers, finance lenders, and fleet operators. Five distinct query types reflect the cryptographic cost and commercial value of each verification. All billed in fiat currency via card or invoice — no crypto knowledge required from the API consumer.</p>
+      <div style="overflow-x:auto; margin-top:1.25rem;">
+        <table style="width:100%;border-collapse:collapse;font-size:0.82rem;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border-main);">
+              <th style="text-align:left;padding:0.5rem 0.75rem;font-family:var(--font-heading);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Query Type</th>
+              <th style="text-align:left;padding:0.5rem 0.75rem;font-family:var(--font-heading);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Payer</th>
+              <th style="text-align:right;padding:0.5rem 0.75rem;font-family:var(--font-heading);font-size:0.68rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+              <td style="padding:0.5rem 0.75rem;color:var(--text-primary);font-weight:500;">Status Check (cached)</td>
+              <td style="padding:0.5rem 0.75rem;color:var(--text-secondary);">Commercial requesters — govt covered by contract</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$0.15–$0.35</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(109,53,232,0.1);background:rgba(109,53,232,0.03);">
+              <td style="padding:0.5rem 0.75rem;color:var(--text-primary);font-weight:500;">Ownership Verify (ZK proof)</td>
+              <td style="padding:0.5rem 0.75rem;color:var(--text-secondary);">Insurer underwriting, lender approval, fleet check</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$1.75–$2.50</td>
+            </tr>
+            <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+              <td style="padding:0.5rem 0.75rem;color:var(--text-primary);font-weight:500;">Full Identity Proof + Transfer</td>
+              <td style="padding:0.5rem 0.75rem;color:var(--text-secondary);">Dealer DMS at point of sale, govt registration</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$9–$15</td>
+            </tr>
+            <tr style="background:rgba(109,53,232,0.03);">
+              <td style="padding:0.5rem 0.75rem;color:var(--text-primary);font-weight:500;">Live Tamper Check (real-time)</td>
+              <td style="padding:0.5rem 0.75rem;color:var(--text-secondary);">Repossession, insurance investigation — govt by contract</td>
+              <td style="padding:0.5rem 0.75rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$6–$12</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
+  <!-- Revenue Streams 3 + 4 -->
+  <div class="grid-2" style="margin-bottom:2rem;">
+    <!-- Stream 3: Dealer Portal -->
+    <div class="card">
+      <div class="card-icon">🏪</div>
+      <h3>Revenue Stream 3</h3>
+      <h4>Dealer Portal — Monthly Subscription</h4>
+      <p>Registered dealerships subscribe monthly for access to the ShieldVIN dealer portal. This integrates into their existing DMS workflow or runs as a standalone web app. The subscription covers unlimited status checks, ownership verifications, and ownership transfer processing for their inventory volume.</p>
+      <div class="safe-specs" style="margin-top:1rem;">
+        <div class="spec-row"><span class="spec-key">Independent / Small (&lt;50 sales/month)</span><span class="spec-val">$199/month</span></div>
+        <div class="spec-row"><span class="spec-key">Mid dealer (50–200 sales/month)</span><span class="spec-val">$349/month</span></div>
+        <div class="spec-row"><span class="spec-key">Large franchise (200+ sales/month)</span><span class="spec-val">$599/month</span></div>
+        <div class="spec-row"><span class="spec-key">Multi-site groups</span><span class="spec-val">Custom enterprise pricing</span></div>
+        <div class="spec-row"><span class="spec-key">Payment</span><span class="spec-val">Card or direct debit — standard SaaS billing. No crypto.</span></div>
+        <div class="spec-row"><span class="spec-key">Benchmark</span><span class="spec-val">Carfax dealer subscriptions: $399–$1,100/month. ShieldVIN provides cryptographic proof Carfax cannot.</span></div>
+      </div>
+    </div>
+
+    <!-- Stream 4: Consumer Platform -->
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h3>Revenue Stream 4</h3>
+      <h4>Consumer Platform — Private Ownership Transfer</h4>
+      <p>Private sellers and buyers use the ShieldVIN web or mobile app to execute a cryptographic ownership transfer. This is the product that closes the private sale fraud gap — currently the most common vector for VIN cloning. The transfer is a digital handshake: seller initiates, buyer confirms, proof recorded on-chain.</p>
+      <div class="safe-specs" style="margin-top:1rem;">
+        <div class="spec-row"><span class="spec-key">Private ownership transfer fee</span><span class="spec-val">$5 per transfer — flat rate, market-dependent by region</span></div>
+        <div class="spec-row"><span class="spec-key">Payment</span><span class="spec-val">Card, Apple Pay, Google Pay — consumer-grade checkout. No crypto wallet.</span></div>
+        <div class="spec-row"><span class="spec-key">Owner app (read-only)</span><span class="spec-val">Free — view own record, export signed PDF, set recall alerts</span></div>
+        <div class="spec-row"><span class="spec-key">Transfer flow</span><span class="spec-val">Seller initiates → buyer receives transfer link → both confirm → ZK proof generated → on-chain ownership hash updated</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Stream 5: Enterprise & Government -->
+  <div class="card" style="margin-bottom:2rem;">
+    <div class="card-icon">🏛</div>
+    <h3>Revenue Stream 5</h3>
+    <h4>Enterprise &amp; Government — Partnerships and Integration Contracts</h4>
+    <p>Three sub-streams targeting long-term institutional relationships. These have the longest sales cycles but the highest contract values and most durable recurring revenue.</p>
+    <div style="overflow-x:auto; margin-top:1.25rem;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-main);">
+            <th style="text-align:left;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Sub-stream</th>
+            <th style="text-align:left;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Model</th>
+            <th style="text-align:right;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Indicative Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Insurance Partnerships</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">Revenue share from demonstrated fraud claim savings. 1–3% of verified savings attributed to ShieldVIN. Multi-year agreements with major insurers.</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">Custom / savings share</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);background:rgba(109,53,232,0.03);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Government Integration Contracts</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">Model B path: one-time integration fee per jurisdiction ($500K–$2M) + annual maintenance ($100K–$400K). Government gets API access; law enforcement access covered. Long-term goal is Model C: regulatory mandate.</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$600K–$2.4M / jurisdiction</td>
+          </tr>
+          <tr>
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Enterprise Data Products</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">Anonymised aggregate data (no PII — consistent with privacy architecture) sold to automotive research bodies, safety regulators, urban planners. Available from Year 4 when fleet scale is sufficient.</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">Annual licence</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Three Product Surfaces -->
+  <h3 style="margin-bottom:1.25rem;">Three Ways to Access ShieldVIN — All Fiat, No Crypto Required</h3>
+  <div class="grid-3" style="margin-bottom:2rem;">
+    <div class="card">
+      <div class="card-icon">⚙️</div>
+      <h4>ShieldVIN API</h4>
+      <p style="color:var(--text-primary);margin-bottom:0.75rem;">Embedded infrastructure — invisible to the end user.</p>
+      <p>Insurers embed ShieldVIN into their policy underwriting platforms. Fleet operators query via API. Government agencies integrate into registration and enforcement systems. Billed by invoice or card at contracted volume rates.</p>
+      <div class="highlight-box cyan" style="margin-top:1rem;margin-bottom:0;">
+        <p style="font-size:0.85rem;">Think of this like Stripe: the buyer interacts with the merchant's checkout, Stripe processes the payment. ShieldVIN processes every vehicle identity query behind the scenes.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-icon">🏪</div>
+      <h4>ShieldVIN Dealer Portal</h4>
+      <p style="color:var(--text-primary);margin-bottom:0.75rem;">Web app and DMS plugin — for registered dealerships.</p>
+      <p>Dealers verify incoming stock, process ZK ownership transfers at point of sale, and provide buyers with a cryptographic proof receipt. Billed monthly via card or direct debit. DMS integration (CDK, Reynolds &amp; Reynolds) available for franchised dealers — no workflow disruption.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📱</div>
+      <h4>ShieldVIN Consumer App</h4>
+      <p style="color:var(--text-primary);margin-bottom:0.75rem;">Web and mobile — for private sellers and owners.</p>
+      <p>Private sellers and buyers complete ownership transfers without a dealer. $5 flat fee paid by card, Apple Pay, or Google Pay. Owners view their full record, export a signed PDF, and set recall alerts at no cost. The brand is visible and the experience is designed for non-technical users.</p>
+    </div>
+  </div>
+
+  <!-- Vehicle Lifetime Value -->
+  <h3 style="margin-bottom:1.25rem;">Vehicle Lifetime Value</h3>
+  <div class="card" style="margin-bottom:2rem;">
+    <p>A vehicle that lives 15 years and changes hands 4 times generates the following cumulative revenue for ShieldVIN across all four streams:</p>
+    <div style="overflow-x:auto; margin-top:1.25rem;">
+      <table style="width:100%;border-collapse:collapse;font-size:0.875rem;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border-main);">
+            <th style="text-align:left;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Revenue Component</th>
+            <th style="text-align:left;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Basis</th>
+            <th style="text-align:right;padding:0.6rem 1rem;font-family:var(--font-heading);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:600;">Range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Chip kit + Minting</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">One-time at manufacture (both streams combined)</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$25–$45</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);background:rgba(109,53,232,0.03);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Ownership Transfers</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">4 transfers × $2–$5 each</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$8–$20</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Service Events Recorded</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">8–12 events × $0.50–$2 each</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$4–$24</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);background:rgba(109,53,232,0.03);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Pre-Sale Buyer Checks</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">3–4 checks × $3.50–$12 each (via ShieldVIN Platform)</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--cyan-main);">$10–$48</td>
+          </tr>
+          <tr style="border-bottom:1px solid rgba(109,53,232,0.1);">
+            <td style="padding:0.65rem 1rem;color:var(--text-primary);font-weight:500;">Insurance Queries</td>
+            <td style="padding:0.65rem 1rem;color:var(--text-secondary);">Covered by insurer annual subscription (not per-query)</td>
+            <td style="padding:0.65rem 1rem;text-align:right;font-family:var(--font-mono);color:var(--text-muted);">Subscription pool</td>
+          </tr>
+          <tr style="border-top:2px solid var(--border-main);background:rgba(0,212,255,0.04);">
+            <td style="padding:0.75rem 1rem;color:var(--text-primary);font-family:var(--font-heading);font-weight:700;">Lifetime Total per Vehicle</td>
+            <td style="padding:0.75rem 1rem;color:var(--text-secondary);font-size:0.82rem;">15-year vehicle life, 4 ownership changes</td>
+            <td style="padding:0.75rem 1rem;text-align:right;font-family:var(--font-mono);font-weight:700;color:var(--cyan-main);font-size:1rem;">~$47–$137</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight-box" style="margin-top:1.25rem;margin-bottom:0;">
+      <p style="font-size:0.875rem;"><strong style="color:var(--text-primary);">Comparison:</strong> HPI currently extracts approximately £50–£160 per vehicle over its lifetime from recurring checks alone — with no hardware component and no on-chain infrastructure. ShieldVIN's lifetime revenue is comparable, generated across a broader set of value-creating events, with the additional chip kit margin on top.</p>
+    </div>
+  </div>
+
+  <!-- Cost Structure + Why Midnight -->
   <div class="grid-2">
     <div class="card">
       <h4>Cost Structure</h4>
       <div class="safe-specs">
-        <div class="spec-row"><span class="spec-key">Chip R&amp;D</span><span class="spec-val">Partnership with existing SE manufacturers (NXP, Infineon, STMicroelectronics)</span></div>
-        <div class="spec-row"><span class="spec-key">Midnight integration</span><span class="spec-val">Smart contract development, SDK, API infrastructure</span></div>
-        <div class="spec-row"><span class="spec-key">Governance</span><span class="spec-val">Standards body operation and legal framework</span></div>
+        <div class="spec-row"><span class="spec-key">Chip procurement</span><span class="spec-val">$6–$15 per vehicle for 3 SE chips (NXP / Infineon / ST) — recovered via chip kit sales at $20–$35</span></div>
+        <div class="spec-row"><span class="spec-key">DUST reserve</span><span class="spec-val">15 DUST per mint + ~5 DUST per lifecycle event (mainnet price TBD — placeholder). Reserve held by consortium and scales with enrolled vehicle volume.</span></div>
+        <div class="spec-row"><span class="spec-key">API infrastructure</span><span class="spec-val">Proof server operations, query infrastructure, platform hosting</span></div>
+        <div class="spec-row"><span class="spec-key">Governance</span><span class="spec-val">VGM-1 consortium administration, standards body operation, legal framework</span></div>
+        <div class="spec-row"><span class="spec-key">Midnight integration</span><span class="spec-val">Compact ZK contract development, SDK maintenance, API infrastructure</span></div>
         <div class="spec-row"><span class="spec-key">Go-to-market</span><span class="spec-val">Manufacturer partnerships, regulatory engagement, pilot programmes</span></div>
-        <div class="spec-row"><span class="spec-key">Ongoing ops</span><span class="spec-val">API infrastructure, validator operations, support</span></div>
-        <div class="spec-row"><span class="spec-key">DUST procurement</span><span class="spec-val">The consortium or system operator holds a DUST reserve to fund on-chain operations (mints, transfers, lifecycle events). DUST is acquired via Midnight Network's token market; reserve size scales with enrolled vehicle volume.</span></div>
       </div>
     </div>
     <div class="card">
-      <h4>Why Midnight Benefits</h4>
-      <p>This project is one of the most compelling enterprise blockchain use cases Midnight could launch with. A global vehicle identity system would:</p>
-      <p>Drive millions of DUST transactions per year. Establish Midnight as the infrastructure layer for a critical real-world industry. Create regulatory-compliant enterprise adoption that validates the "rational privacy" positioning. Demonstrate ZK proofs working at automotive scale and speed, proving the technology to other industries.</p>
+      <div class="card-icon">🌐</div>
+      <h4>DUST Economy Contribution</h4>
+      <p>Every vehicle mint, ownership transfer, service record, and lifecycle event consumes DUST as the Midnight Network transaction fee. At tens of millions of events per year across an enrolled global fleet, ShieldVIN becomes one of Midnight's largest institutional on-chain activity drivers.</p>
+      <p>This is not a revenue source for ShieldVIN — it is a sustained, predictable demand signal for the Midnight token economy. A global vehicle identity system would:</p>
+      <p>Drive millions of DUST transactions per year. Establish Midnight as the infrastructure layer for a critical regulated industry. Create enterprise adoption that validates the "rational privacy" positioning. Demonstrate ZK proofs working at automotive scale and speed, proving the technology to every adjacent industry.</p>
     </div>
   </div>
 </section>
@@ -2929,10 +3118,12 @@ footer {
     <table class="print-only" style="display:none;margin-top:0.5rem;width:100%;border-collapse:collapse;font-size:9pt;">
       <thead><tr><th style="text-align:left;padding:4px 8px;background:#040d1e;color:white;">Revenue Stream</th><th style="padding:4px 8px;background:#040d1e;color:white;">Y1 2026</th><th style="padding:4px 8px;background:#040d1e;color:white;">Y2 2027</th><th style="padding:4px 8px;background:#040d1e;color:white;">Y3 2028</th><th style="padding:4px 8px;background:#040d1e;color:white;">Y4 2029</th><th style="padding:4px 8px;background:#040d1e;color:white;">Y5 2030</th></tr></thead>
       <tbody>
-        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Vehicle Minting Fees</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.10M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.80M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$4.20M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$18.50M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$58.00M</td></tr>
-        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Verification API Access</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.05M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.30M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$1.80M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$9.20M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$31.00M</td></tr>
-        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Insurance &amp; Enterprise</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">—</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.10M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.90M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$5.40M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$19.00M</td></tr>
-        <tr style="font-weight:bold;"><td style="padding:3px 8px;border:1px solid #ccc;">Total Revenue</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.15M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$1.20M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$6.90M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$33.10M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$108.00M</td></tr>
+        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Vehicle Identity Token Minting</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.18M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$1.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$5.20M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$18.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$42.00M</td></tr>
+        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Verification API — Insurer/Lender/Fleet</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.05M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.25M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$1.50M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$8.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$25.00M</td></tr>
+        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Dealer Portal Subscription</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">—</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.60M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$3.50M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$14.90M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$39.60M</td></tr>
+        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Consumer Platform — Private Seller</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">—</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.05M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.35M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$1.60M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$6.30M</td></tr>
+        <tr><td style="padding:3px 8px;border:1px solid #ccc;">Enterprise &amp; Government</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">—</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.10M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$2.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$5.50M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$18.00M</td></tr>
+        <tr style="font-weight:bold;background:#f0f0ff;"><td style="padding:3px 8px;border:1px solid #ccc;">Total Revenue</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$0.23M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$2.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$12.55M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$48.00M</td><td style="padding:3px 8px;border:1px solid #ccc;text-align:center;">$131.00M</td></tr>
       </tbody>
     </table>
   </div>
@@ -3375,9 +3566,9 @@ new Chart(document.getElementById('chartGrowth'), {
   }
 });
 
-// Chart 4: Revenue projection
-const revTotals = [0.15, 1.20, 6.90, 33.10, 108.00];
-const revYoY = ['—', '+700%', '+475%', '+380%', '+226%'];
+// Chart 4: Revenue projection — 5 streams
+const revTotals = [0.23, 2.00, 12.55, 48.00, 131.00];
+const revYoY = ['—', '+770%', '+528%', '+282%', '+173%'];
 new Chart(document.getElementById('chartRevenue'), {
   type: 'bar',
   data: {
@@ -3385,21 +3576,35 @@ new Chart(document.getElementById('chartRevenue'), {
     datasets: [
       {
         label: 'Vehicle Minting Fees',
-        data: [0.1, 0.8, 4.2, 18.5, 58],
+        data: [0.18, 1.00, 5.20, 18.00, 42.00],
         backgroundColor: 'rgba(109,53,232,0.75)',
         borderRadius: 4,
         stack: 'revenue',
       },
       {
-        label: 'Verification API',
-        data: [0.05, 0.3, 1.8, 9.2, 31],
+        label: 'Verification API (Insurer/Lender/Fleet)',
+        data: [0.05, 0.25, 1.50, 8.00, 25.00],
         backgroundColor: 'rgba(0,212,255,0.6)',
         borderRadius: 4,
         stack: 'revenue',
       },
       {
-        label: 'Insurance & Enterprise',
-        data: [0, 0.1, 0.9, 5.4, 19],
+        label: 'Dealer Portal Subscription',
+        data: [0, 0.60, 3.50, 14.90, 39.60],
+        backgroundColor: 'rgba(245,158,11,0.65)',
+        borderRadius: 4,
+        stack: 'revenue',
+      },
+      {
+        label: 'Consumer Platform',
+        data: [0, 0.05, 0.35, 1.60, 6.30],
+        backgroundColor: 'rgba(236,72,153,0.55)',
+        borderRadius: 4,
+        stack: 'revenue',
+      },
+      {
+        label: 'Enterprise & Government',
+        data: [0, 0.10, 2.00, 5.50, 18.00],
         backgroundColor: 'rgba(34,197,94,0.55)',
         borderRadius: 4,
         stack: 'revenue',
@@ -3425,11 +3630,11 @@ new Chart(document.getElementById('chartRevenue'), {
           afterBody: (items) => {
             const i = items[0].dataIndex;
             const notes = [
-              'Phase 1 — Proof of concept. Revenue from testnet pilot minting only.',
-              'Phase 2 begin — Limited pilot vehicles + early API access.',
-              'Phase 2 → 3 — Pilot scaling. Multiple manufacturers onboarding.',
-              'Phase 3 — Multi-manufacturer rollout. 3+ jurisdictions live.',
-              'Phase 3 target — $108M total. Commercially self-sustaining.',
+              'Phase 1 — PoC. Revenue from early minting + pilot API access only.',
+              'Phase 2 begin — Pilot vehicles + first dealer subscriptions + API commercial launch.',
+              'Phase 2 → 3 — Pilot scaling. Dealer network growing. First govt integration contract.',
+              'Phase 3 — Multi-manufacturer rollout. 3+ jurisdictions. ~4,000 dealer subscribers.',
+              'Phase 3 target — $131M total across 5 streams. Note: speculative — varies by region.',
             ];
             return [``, ` Context: ${notes[i]}`];
           }

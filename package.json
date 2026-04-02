@@ -21,5 +21,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "docx": "^8.5.0"
+  },
+  "devDependencies": {
+    "exceljs": "^4.4.0"
   }
 }

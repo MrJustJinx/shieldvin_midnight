@@ -689,10 +689,65 @@
     <span class="sec-line"></span>
   </div>
 
+  <!-- Five revenue streams summary -->
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-family:'Exo 2',sans-serif; font-weight:700; margin-bottom:4px; font-size:0.95rem;">Five Revenue Streams — All Fiat, No Crypto Required</div>
+    <div style="font-size:0.72rem; color:var(--text-m); margin-bottom:12px;">Speculative projections — actual fees vary by region, OEM tier, and regulatory environment.</div>
+    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:10px;">
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--purple-l); letter-spacing:0.08em; margin-bottom:4px;">STREAM 1</div>
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:4px;">VIT Minting Fee</div>
+        <div style="font-size:0.75rem; color:var(--text-s);">One-time per vehicle at manufacture. Volume tiers: Ultra-scale (3M+/yr) $3–5 · Large OEM $8–12 · Mid OEM $12–18 · Small/early adopter $20–25. Billed by invoice to manufacturer.</div>
+      </div>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--purple-l); letter-spacing:0.08em; margin-bottom:4px;">STREAM 2</div>
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:4px;">Verification API</div>
+        <div style="font-size:0.75rem; color:var(--text-s);">Per-query for insurers, lenders, fleet operators. Status check $0.15–0.35 · Ownership verify $1.75–2.50 · Full identity proof $9–15 · Live tamper check $6–12. Card or invoice.</div>
+      </div>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--purple-l); letter-spacing:0.08em; margin-bottom:4px;">STREAM 3</div>
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:4px;">Dealer Portal Subscription</div>
+        <div style="font-size:0.75rem; color:var(--text-s);">Monthly SaaS per dealership. Small $199 · Mid $349 · Large franchise $599/month. DMS integration for franchised dealers. Card or direct debit billing. ~10,000 dealers by Year 5.</div>
+      </div>
+      <div style="background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--purple-l); letter-spacing:0.08em; margin-bottom:4px;">STREAM 4</div>
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:4px;">Consumer Platform</div>
+        <div style="font-size:0.75rem; color:var(--text-s);">$5 per private ownership transfer (market-dependent). Seller initiates → buyer confirms → ZK proof → on-chain update. Card, Apple Pay, Google Pay. Owner app read-only is free.</div>
+      </div>
+    </div>
+    <div style="margin-top:10px; background:var(--card2); border:1px solid var(--border); border-radius:8px; padding:12px;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; color:var(--purple-l); letter-spacing:0.08em; margin-bottom:4px;">STREAM 5</div>
+      <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:4px;">Enterprise &amp; Government</div>
+      <div style="font-size:0.75rem; color:var(--text-s);">Insurance partnerships (revenue share from fraud savings) · Government integration contracts — Model B path: $500K–$2M integration fee + annual maintenance per jurisdiction (DVLA, DMV etc.) · Enterprise data products from Year 4. Long-term goal: Model C regulatory mandate.</div>
+    </div>
+    <div style="margin-top:10px; padding:8px 12px; background:rgba(0,212,255,0.06); border:1px solid rgba(0,212,255,0.2); border-radius:6px; font-size:0.75rem; color:var(--text-s);">
+      <strong style="color:var(--cyan);">Fiat-first model:</strong> All client payments in USD / GBP / EUR via standard billing rails. ShieldVIN holds a DUST operational reserve and absorbs all on-chain transaction costs. No crypto wallet required from any user.
+    </div>
+  </div>
+
+  <!-- Three Product Surfaces -->
+  <div class="card" style="margin-bottom:16px;">
+    <div style="font-family:'Exo 2',sans-serif; font-weight:700; margin-bottom:12px; font-size:0.95rem;">Three Product Surfaces</div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px;">
+      <div style="padding:12px; background:var(--card2); border:1px solid var(--border); border-radius:8px;">
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:6px; color:var(--text);">ShieldVIN API</div>
+        <div style="font-size:0.75rem; color:var(--text-s); line-height:1.6;">Embedded infrastructure. Insurers, lenders, fleet operators, government. Invisible to end user. Like Stripe for vehicle identity.</div>
+      </div>
+      <div style="padding:12px; background:var(--card2); border:1px solid var(--border); border-radius:8px;">
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:6px; color:var(--text);">Dealer Portal</div>
+        <div style="font-size:0.75rem; color:var(--text-s); line-height:1.6;">Web app + DMS plugin. Verify stock, process ownership transfers, issue buyer proof receipts. Monthly subscription.</div>
+      </div>
+      <div style="padding:12px; background:var(--card2); border:1px solid var(--border); border-radius:8px;">
+        <div style="font-family:'Exo 2',sans-serif; font-weight:700; font-size:0.88rem; margin-bottom:6px; color:var(--text);">Consumer App</div>
+        <div style="font-size:0.75rem; color:var(--text-s); line-height:1.6;">Private sellers + owners. $5 ownership transfer. View own record free. Card or mobile pay checkout.</div>
+      </div>
+    </div>
+  </div>
+
   <div class="two-col">
     <div class="card">
       <div style="font-family:'Exo 2',sans-serif; font-weight:700; margin-bottom:4px; font-size:0.95rem;">5-Year Revenue Projection</div>
-      <div style="font-size:0.75rem; color:var(--text-m); margin-bottom:16px;">Base case · $9/vehicle minting fee</div>
+      <div style="font-size:0.72rem; color:var(--text-m); margin-bottom:16px;">Base case · 5 streams · speculative — varies by region and adoption rate</div>
       <div class="chart-wrap">
         <canvas id="revenueChart"></canvas>
       </div>
@@ -705,22 +760,25 @@
             <th>Year</th>
             <th>Minting</th>
             <th>API</th>
-            <th>Enterprise</th>
+            <th>Dealer</th>
+            <th>Consumer</th>
+            <th>Ent+Govt</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td>Y1</td><td>0.10</td><td>0.05</td><td>—</td><td>0.15</td></tr>
-          <tr><td>Y2</td><td>0.80</td><td>0.30</td><td>0.10</td><td>1.20</td></tr>
-          <tr><td>Y3</td><td>4.20</td><td>1.80</td><td>0.90</td><td>6.90</td></tr>
-          <tr><td>Y4</td><td>18.50</td><td>9.20</td><td>5.40</td><td>33.10</td></tr>
-          <tr class="total"><td>Y5</td><td>58.00</td><td>31.00</td><td>19.00</td><td>108.00</td></tr>
+          <tr><td>Y1</td><td>0.18</td><td>0.05</td><td>—</td><td>—</td><td>—</td><td>0.23</td></tr>
+          <tr><td>Y2</td><td>1.00</td><td>0.25</td><td>0.60</td><td>0.05</td><td>0.10</td><td>2.00</td></tr>
+          <tr><td>Y3</td><td>5.20</td><td>1.50</td><td>3.50</td><td>0.35</td><td>2.00</td><td>12.55</td></tr>
+          <tr><td>Y4</td><td>18.00</td><td>8.00</td><td>14.90</td><td>1.60</td><td>5.50</td><td>48.00</td></tr>
+          <tr class="total"><td>Y5</td><td>42.00</td><td>25.00</td><td>39.60</td><td>6.30</td><td>18.00</td><td>131.00</td></tr>
         </tbody>
       </table>
-      <div style="margin-top:14px; font-size:0.75rem; color:var(--text-m);">
+      <div style="margin-top:14px; font-size:0.72rem; color:var(--text-m);">
         Phase 1–2 investment: $12M–$18M<br>
-        API pricing: $0.10–$2.50/query by role<br>
-        DUST is an operational cost — not a revenue stream
+        Minting: volume tiers $3–$25/vehicle · API: $0.15–$12/query by type<br>
+        Dealer: $199–$599/month · Consumer: $5/transfer · All billed in fiat<br>
+        DUST is an operational cost absorbed by ShieldVIN — not a revenue stream
       </div>
     </div>
   </div>
@@ -799,7 +857,7 @@
 </footer>
 
 <script>
-// Revenue stacked bar chart
+// Revenue stacked bar chart — 5 streams
 const ctx = document.getElementById('revenueChart').getContext('2d');
 new Chart(ctx, {
   type: 'bar',
@@ -808,20 +866,32 @@ new Chart(ctx, {
     datasets: [
       {
         label: 'Minting',
-        data: [0.10, 0.80, 4.20, 18.50, 58.00],
+        data: [0.18, 1.00, 5.20, 18.00, 42.00],
         backgroundColor: 'rgba(109,53,232,0.75)',
         borderRadius: 3,
       },
       {
         label: 'API',
-        data: [0.05, 0.30, 1.80, 9.20, 31.00],
+        data: [0.05, 0.25, 1.50, 8.00, 25.00],
         backgroundColor: 'rgba(0,212,255,0.65)',
         borderRadius: 3,
       },
       {
-        label: 'Enterprise',
-        data: [0, 0.10, 0.90, 5.40, 19.00],
-        backgroundColor: 'rgba(245,158,11,0.6)',
+        label: 'Dealer',
+        data: [0, 0.60, 3.50, 14.90, 39.60],
+        backgroundColor: 'rgba(245,158,11,0.65)',
+        borderRadius: 3,
+      },
+      {
+        label: 'Consumer',
+        data: [0, 0.05, 0.35, 1.60, 6.30],
+        backgroundColor: 'rgba(236,72,153,0.55)',
+        borderRadius: 3,
+      },
+      {
+        label: 'Ent+Govt',
+        data: [0, 0.10, 2.00, 5.50, 18.00],
+        backgroundColor: 'rgba(34,197,94,0.55)',
         borderRadius: 3,
       }
     ]
