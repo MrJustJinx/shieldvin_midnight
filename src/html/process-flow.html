@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShieldVIN — Process Overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:          #040d1e;
+    --card:        #0b1629;
+    --card2:       #111e35;
+    --purple:      #6d35e8;
+    --purple-l:    #9b70f0;
+    --cyan:        #00d4ff;
+    --text:        #eef2ff;
+    --text-s:      #94a3c0;
+    --text-m:      #5a6a8a;
+    --border:      rgba(109,53,232,0.25);
+
+    /* Role colors */
+    --oem:         #1a5fa8;
+    --oem-bg:      rgba(26,95,168,0.15);
+    --dealer:      #0d9488;
+    --dealer-bg:   rgba(13,148,136,0.15);
+    --service:     #65a30d;
+    --service-bg:  rgba(101,163,13,0.15);
+    --owner:       #d97706;
+    --owner-bg:    rgba(217,119,6,0.15);
+    --gov:         #9b1c3a;
+    --gov-bg:      rgba(155,28,58,0.15);
+    --leo:         #b91c1c;
+    --leo-bg:      rgba(185,28,28,0.15);
+    --insurer:     #3730a3;
+    --insurer-bg:  rgba(55,48,163,0.15);
+    --finance:     #92640a;
+    --finance-bg:  rgba(146,100,10,0.15);
+    --shieldvin:   #6d35e8;
+    --shieldvin-bg:rgba(109,53,232,0.15);
+    --midnight:    #0d2545;
+    --midnight-bg: rgba(13,37,69,0.4);
+    --chip:        #4a5568;
+    --chip-bg:     rgba(74,85,104,0.2);
+
+    /* Fee colors */
+    --fiat:        #059669;
+    --fiat-bg:     rgba(5,150,105,0.15);
+    --dust:        #7c3aed;
+    --dust-bg:     rgba(124,58,237,0.12);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ─────────────────────────────────────────── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(4,13,30,0.95);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    height: 56px;
+  }
+  nav .brand {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  nav .brand span { color: var(--cyan); }
+  nav .links {
+    display: flex;
+    gap: 1.5rem;
+    margin-left: auto;
+    font-size: 0.85rem;
+  }
+  nav .links a {
+    color: var(--text-s);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  nav .links a:hover, nav .links a.active { color: var(--cyan); }
+
+  /* ── HERO ─────────────────────────────────────────── */
+  .hero {
+    text-align: center;
+    padding: 3.5rem 2rem 2rem;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(109,53,232,0.12), transparent);
+    pointer-events: none;
+  }
+  .hero-label {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--cyan);
+    background: rgba(0,212,255,0.08);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 20px;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-family: 'Exo 2', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(135deg, var(--purple-l), var(--cyan));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    color: var(--text-s);
+    font-size: 0.95rem;
+  }
+
+  /* ── FILTERS ──────────────────────────────────────── */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 2.5rem;
+    padding: 0 1rem;
+  }
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background: var(--card);
+    color: var(--text-s);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+  .filter-btn.active { color: #fff; }
+  .filter-btn .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .filter-btn[data-role="all"].active { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+  .filter-btn[data-role="oem"].active       { background: var(--oem-bg);      border-color: var(--oem); }
+  .filter-btn[data-role="dealer"].active    { background: var(--dealer-bg);   border-color: var(--dealer); }
+  .filter-btn[data-role="service"].active   { background: var(--service-bg);  border-color: var(--service); }
+  .filter-btn[data-role="owner"].active     { background: var(--owner-bg);    border-color: var(--owner); }
+  .filter-btn[data-role="gov"].active       { background: var(--gov-bg);      border-color: var(--gov); }
+  .filter-btn[data-role="leo"].active       { background: var(--leo-bg);      border-color: var(--leo); }
+  .filter-btn[data-role="insurer"].active   { background: var(--insurer-bg);  border-color: var(--insurer); }
+  .filter-btn[data-role="finance"].active   { background: var(--finance-bg);  border-color: var(--finance); }
+  .filter-btn[data-role="shieldvin"].active { background: var(--shieldvin-bg);border-color: var(--shieldvin); }
+  .filter-btn[data-role="midnight"].active  { background: var(--midnight-bg); border-color: var(--cyan); }
+  .filter-btn[data-role="chip"].active      { background: var(--chip-bg);     border-color: var(--chip); }
+
+  /* ── MAIN LAYOUT ──────────────────────────────────── */
+  .flow-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+  }
+
+  /* ── PHASE CARD ───────────────────────────────────── */
+  .phase {
+    position: relative;
+    margin-bottom: 1rem;
+    transition: opacity 0.3s;
+  }
+  .phase.dimmed { opacity: 0.25; }
+
+  /* connector line */
+  .phase:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 26px;
+    bottom: -1rem;
+    width: 2px;
+    height: 1rem;
+    background: linear-gradient(to bottom, var(--border), transparent);
+  }
+
+  .phase-header {
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 0;
+    cursor: pointer;
+    border-radius: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    overflow: hidden;
+  }
+  .phase-header:hover {
+    border-color: rgba(109,53,232,0.5);
+    box-shadow: 0 0 0 1px rgba(109,53,232,0.2);
+  }
+  .phase.open .phase-header {
+    border-color: rgba(109,53,232,0.6);
+    border-radius: 12px 12px 0 0;
+    border-bottom: none;
+  }
+
+  .phase-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-m);
+    background: var(--card2);
+    border-right: 1px solid var(--border);
+    min-height: 64px;
+    width: 52px;
+  }
+
+  .phase-summary {
+    padding: 0.9rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .phase-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .phase-name {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 700;
+    font-size: 0.97rem;
+    color: var(--text);
+  }
+
+  .chevron {
+    margin-left: auto;
+    color: var(--text-m);
+    transition: transform 0.25s;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .phase.open .chevron { transform: rotate(180deg); }
+
+  .pills-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    align-items: center;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.18rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .pill .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* role pills */
+  .pill-oem       { background: var(--oem-bg);       color: #5ba3e8; border: 1px solid rgba(26,95,168,0.4); }
+  .pill-dealer    { background: var(--dealer-bg);    color: #2dd4bf; border: 1px solid rgba(13,148,136,0.4); }
+  .pill-service   { background: var(--service-bg);   color: #a3e635; border: 1px solid rgba(101,163,13,0.4); }
+  .pill-owner     { background: var(--owner-bg);     color: #fbbf24; border: 1px solid rgba(217,119,6,0.4); }
+  .pill-gov       { background: var(--gov-bg);       color: #f87171; border: 1px solid rgba(155,28,58,0.4); }
+  .pill-leo       { background: var(--leo-bg);       color: #fca5a5; border: 1px solid rgba(185,28,28,0.4); }
+  .pill-insurer   { background: var(--insurer-bg);   color: #a5b4fc; border: 1px solid rgba(55,48,163,0.4); }
+  .pill-finance   { background: var(--finance-bg);   color: #fcd34d; border: 1px solid rgba(146,100,10,0.4); }
+  .pill-shieldvin { background: var(--shieldvin-bg); color: var(--purple-l); border: 1px solid rgba(109,53,232,0.4); }
+  .pill-midnight  { background: var(--midnight-bg);  color: var(--cyan); border: 1px solid rgba(0,212,255,0.25); }
+  .pill-chip      { background: var(--chip-bg);      color: #94a3b8; border: 1px solid rgba(74,85,104,0.4); }
+
+  /* fee pills */
+  .pill-fiat { background: rgba(5,150,105,0.12); color: #34d399; border: 1px solid rgba(5,150,105,0.35); font-family: 'IBM Plex Mono', monospace; }
+  .pill-dust { background: rgba(124,58,237,0.12); color: var(--purple-l); border: 1px dashed rgba(109,53,232,0.5); font-family: 'IBM Plex Mono', monospace; }
+  .pill-free { background: rgba(0,212,255,0.08); color: var(--cyan); border: 1px solid rgba(0,212,255,0.2); font-family: 'IBM Plex Mono', monospace; }
+  .pill-none { background: rgba(255,255,255,0.05); color: var(--text-m); border: 1px solid rgba(255,255,255,0.1); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── EXPANDED BODY ────────────────────────────────── */
+  .phase-body {
+    display: none;
+    background: var(--card);
+    border: 1px solid rgba(109,53,232,0.6);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+  .phase.open .phase-body { display: block; }
+
+  .phase-body p {
+    color: var(--text-s);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  .steps {
+    list-style: none;
+    margin-bottom: 1.2rem;
+  }
+  .steps li {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 0.5rem;
+    align-items: start;
+    padding: 0.45rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.85rem;
+    color: var(--text-s);
+  }
+  .steps li:last-child { border-bottom: none; }
+  .steps .step-n {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-m);
+    padding-top: 2px;
+  }
+  .steps .step-t { color: var(--text); font-weight: 500; }
+  .steps .step-d { color: var(--text-s); font-size: 0.82rem; margin-top: 0.15rem; }
+
+  .fees-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+  .fee-card {
+    background: var(--card2);
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
+    border-left: 3px solid;
+  }
+  .fee-card.fiat  { border-color: var(--fiat); }
+  .fee-card.dust  { border-color: var(--dust); border-style: dashed; }
+  .fee-card.free  { border-color: var(--cyan); }
+  .fee-card.none  { border-color: var(--text-m); }
+  .fee-card .fee-label {
+    font-size: 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  .fee-card.fiat .fee-label { color: #34d399; }
+  .fee-card.dust .fee-label { color: var(--purple-l); }
+  .fee-card.free .fee-label { color: var(--cyan); }
+  .fee-card.none .fee-label { color: var(--text-m); }
+  .fee-card .fee-desc { font-size: 0.8rem; color: var(--text-s); line-height: 1.4; }
+  .fee-card .fee-payer { font-size: 0.74rem; color: var(--text-m); margin-top: 0.2rem; }
+
+  .body-section-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-m);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.5rem;
+  }
+
+  .on-chain-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: var(--midnight-bg);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 6px;
+    padding: 0.3rem 0.7rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--cyan);
+    margin-top: 0.75rem;
+  }
+
+  /* ── LEGEND ───────────────────────────────────────── */
+  .legend-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .legend-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-m);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 1rem;
+  }
+  .legend-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .legend-section-title {
+    font-size: 0.75rem;
+    color: var(--text-m);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  .legend-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  @media (max-width: 600px) {
+    .legend-cols { grid-template-columns: 1fr; }
+    nav .links { display: none; }
+  }
+
+  /* ── PHASE COUNT ──────────────────────────────────── */
+  .phase-count-label {
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-m);
+    margin-bottom: 1.25rem;
+  }
+
+  /* ── EXPAND ALL ───────────────────────────────────── */
+  .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .toolbar-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text-s);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.78rem;
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toolbar-btn:hover { border-color: var(--purple-l); color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ─────────────────────────────────────────────── -->
+<nav>
+  <a class="brand" href="../../index.html">Shield<span>VIN</span></a>
+  <div class="links">
+    <a href="whitepaper.html">Whitepaper</a>
+    <a href="shieldvin-summary.html">Summary</a>
+    <a href="shieldvin-demo.html">Demo</a>
+    <a href="../charts/market-opportunity.html">Market</a>
+    <a href="process-flow.html" class="active">Process</a>
+  </div>
+</nav>
+
+<!-- ── HERO ─────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-label">End-to-End Process Overview</div>
+  <h1>Vehicle Identity <em>Lifecycle</em></h1>
+  <p>From chip manufacture to decommission — every interaction, every role, and every fee trigger across the full ShieldVIN lifecycle. Click any phase to expand the detail.</p>
+</div>
+
+<!-- ── FILTERS ───────────────────────────────────────────── -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-role="all">
+    <span class="dot" style="background:#eef2ff"></span> All Roles
+  </button>
+  <button class="filter-btn" data-role="chip">
+    <span class="dot" style="background:#4a5568"></span> SE Chip Manufacturer
+  </button>
+  <button class="filter-btn" data-role="oem">
+    <span class="dot" style="background:#1a5fa8"></span> OEM / Manufacturer
+  </button>
+  <button class="filter-btn" data-role="dealer">
+    <span class="dot" style="background:#0d9488"></span> Dealer
+  </button>
+  <button class="filter-btn" data-role="service">
+    <span class="dot" style="background:#65a30d"></span> Service Centre
+  </button>
+  <button class="filter-btn" data-role="owner">
+    <span class="dot" style="background:#d97706"></span> Private Owner
+  </button>
+  <button class="filter-btn" data-role="gov">
+    <span class="dot" style="background:#9b1c3a"></span> Government / DMV
+  </button>
+  <button class="filter-btn" data-role="leo">
+    <span class="dot" style="background:#b91c1c"></span> Law Enforcement
+  </button>
+  <button class="filter-btn" data-role="insurer">
+    <span class="dot" style="background:#3730a3"></span> Insurance
+  </button>
+  <button class="filter-btn" data-role="finance">
+    <span class="dot" style="background:#92640a"></span> Finance / Lender
+  </button>
+  <button class="filter-btn" data-role="shieldvin">
+    <span class="dot" style="background:#6d35e8"></span> ShieldVIN
+  </button>
+  <button class="filter-btn" data-role="midnight">
+    <span class="dot" style="background:#00d4ff"></span> Midnight Network
+  </button>
+</div>
+
+<!-- ── FLOW CONTAINER ────────────────────────────────────── -->
+<div class="flow-container">
+
+  <!-- Legend -->
+  <div class="legend-panel">
+    <div class="legend-title">Legend</div>
+    <div class="legend-cols">
+      <div>
+        <div class="legend-section-title">Roles</div>
+        <div class="legend-items">
+          <span class="pill pill-chip"><span class="dot" style="background:#94a3b8"></span>SE Chip Mfr</span>
+          <span class="pill pill-oem"><span class="dot" style="background:#5ba3e8"></span>OEM</span>
+          <span class="pill pill-dealer"><span class="dot" style="background:#2dd4bf"></span>Dealer</span>
+          <span class="pill pill-service"><span class="dot" style="background:#a3e635"></span>Service Centre</span>
+          <span class="pill pill-owner"><span class="dot" style="background:#fbbf24"></span>Private Owner</span>
+          <span class="pill pill-gov"><span class="dot" style="background:#f87171"></span>Government / DMV</span>
+          <span class="pill pill-leo"><span class="dot" style="background:#fca5a5"></span>Law Enforcement</span>
+          <span class="pill pill-insurer"><span class="dot" style="background:#a5b4fc"></span>Insurance</span>
+          <span class="pill pill-finance"><span class="dot" style="background:#fcd34d"></span>Finance / Lender</span>
+          <span class="pill pill-shieldvin"><span class="dot" style="background:#9b70f0"></span>ShieldVIN</span>
+          <span class="pill pill-midnight"><span class="dot" style="background:#00d4ff"></span>Midnight Network</span>
+        </div>
+      </div>
+      <div>
+        <div class="legend-section-title">Fee Types</div>
+        <div class="legend-items">
+          <span class="pill pill-fiat">💳 FIAT — client-facing fee (card / direct debit / Apple Pay)</span>
+          <span class="pill pill-dust">◈ DUST — internal operational cost (ShieldVIN pays; never billed to clients)</span>
+          <span class="pill pill-free">✓ FREE — no charge</span>
+          <span class="pill pill-none">— NO FEE at this step</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <button class="toolbar-btn" id="expandAll">Expand All</button>
+    <button class="toolbar-btn" id="collapseAll">Collapse All</button>
+  </div>
+
+  <div class="phase-count-label" id="phaseCounter">Showing all 14 phases</div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 1: SE Chip Manufacturing -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="chip shieldvin" id="phase-1">
+    <div class="phase-header" onclick="togglePhase('phase-1')">
+      <div class="phase-num">01</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">SE Chip Manufacturing &amp; Supply</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-chip">SE Chip Manufacturer</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-none">— NO FEE at this step</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>The three Secure Element chips — EN-1 (engine), CN-2 (chassis), TN-3 (telematics) — are manufactured to the VSE-1 hardware standard and supplied to OEM manufacturing plants. Each chip generates its own independent Ed25519 keypair in hardware at factory provisioning. The private key never leaves the chip. The public key is recorded by the chip manufacturer and transferred securely to ShieldVIN's provisioning registry for subsequent VIT minting.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">1.1</span><div><div class="step-t">Chip fabrication</div><div class="step-d">SE chips manufactured to VSE-1 spec. EAL5+ certification. EN-1 and CN-2 are hardened for physical tamper response (key wipe on breach). TN-3 includes cellular/BT connectivity module.</div></div></li>
+        <li><span class="step-n">1.2</span><div><div class="step-t">In-chip keypair generation</div><div class="step-d">Each chip generates an independent Ed25519 keypair in hardware during factory provisioning. Private key is immutable and never transmitted. Public key is extracted.</div></div></li>
+        <li><span class="step-n">1.3</span><div><div class="step-t">Public key registry transfer</div><div class="step-d">Chip serial → public key mapping is transferred securely to ShieldVIN's provisioning system under a hardware supply agreement. This is the only moment the public key moves off the chip.</div></div></li>
+        <li><span class="step-n">1.4</span><div><div class="step-t">OEM supply</div><div class="step-d">Chips delivered to OEM manufacturing plants in sealed, certified packaging. Chip serial numbers linked to the OEM's factory code for traceability before installation.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card none"><div class="fee-label">— NO CLIENT FEE</div><div class="fee-desc">Chip supply is a hardware contract between the SE chip manufacturer and the OEM. Not a ShieldVIN revenue event.</div></div>
+      </div>
+      <div class="on-chain-badge">◈ No Midnight Network transaction at this stage</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 2: OEM Onboarding -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="oem shieldvin" id="phase-2">
+    <div class="phase-header" onclick="togglePhase('phase-2')">
+      <div class="phase-num">02</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">OEM Onboarding &amp; Manufacturing Setup</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-oem">OEM / Manufacturer</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-fiat">💳 FIAT — Onboarding contract fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>The OEM joins the ShieldVIN VGM-1 governance consortium, establishing the commercial and technical relationship required before any vehicle can be minted. This is a one-time setup per manufacturer, with per-plant configuration for each factory code. The Manufacturer Portal is provisioned and staff credentials are issued.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">2.1</span><div><div class="step-t">VGM-1 consortium agreement</div><div class="step-d">OEM signs the VGM-1 governance agreement, establishing their role, data rights, and obligations. Legal, compliance, and technical teams engaged.</div></div></li>
+        <li><span class="step-n">2.2</span><div><div class="step-t">Factory code registration</div><div class="step-d">Each manufacturing plant is assigned a unique 8-byte factoryCode. This code appears in every VIT minted at that plant, enabling OEM-scoped fleet queries.</div></div></li>
+        <li><span class="step-n">2.3</span><div><div class="step-t">Manufacturer Portal provisioned</div><div class="step-d">ShieldVIN provisions the OEM's environment on the Manufacturer Portal. VAP-1 API credentials issued. Staff roles configured (plant operator, recall coordinator, fleet admin).</div></div></li>
+        <li><span class="step-n">2.4</span><div><div class="step-t">End-of-line minting workflow integration</div><div class="step-d">OEM integrates the VAP-1 minting endpoint into their end-of-line manufacturing execution system (MES). Technical integration and testing with ShieldVIN engineering team.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — One-time Onboarding Fee</div><div class="fee-desc">Enterprise contract for VGM-1 consortium membership and Manufacturer Portal setup. Billed by invoice.</div><div class="fee-payer">Payer: OEM</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal</div><div class="fee-desc">ShieldVIN pre-funds DUST reserve for this OEM's minting operations. DUST is never billed to the OEM.</div><div class="fee-payer">Payer: ShieldVIN (internal operational cost)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ No vehicle VIT minted yet — setup only</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 3: Vehicle Manufacturing + VIT Minting -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="oem shieldvin midnight" id="phase-3">
+    <div class="phase-header" onclick="togglePhase('phase-3')">
+      <div class="phase-num">03</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Vehicle Manufacturing &amp; VIT Minting</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-oem">OEM / Manufacturer</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Per-vehicle minting fee</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>At the end of the production line, once the vehicle's three SE chips are installed and verified, the OEM's manufacturing system calls the ShieldVIN VAP-1 minting endpoint. A Vehicle Identity Token (VIT) is created on Midnight Network — permanently linking the physical vehicle's three hardware keys to its VIN and build record. This is the moment the vehicle acquires a cryptographic identity.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">3.1</span><div><div class="step-t">Chip installation &amp; verification</div><div class="step-d">EN-1 installed in ECU (engine bay). CN-2 installed in structural A-pillar or firewall at body-in-white stage. TN-3 installed in telematics module behind dashboard. Each chip signs a factory nonce to confirm it is live and responsive.</div></div></li>
+        <li><span class="step-n">3.2</span><div><div class="step-t">VIN assignment</div><div class="step-d">ISO 3779 VIN assigned to the vehicle. VIN linked to the three chip public keys in the ShieldVIN provisioning system.</div></div></li>
+        <li><span class="step-n">3.3</span><div><div class="step-t">VAP-1 mint request</div><div class="step-d">OEM's MES system calls POST /v1/vehicle/mint with VIN, three chip public keys (en1PublicKey, cn2PublicKey, tn3PublicKey), buildSpecHash, factoryCode, and mintTimestamp.</div></div></li>
+        <li><span class="step-n">3.4</span><div><div class="step-t">VIT minted on Midnight Network</div><div class="step-d">ShieldVIN's backend deploys (or writes to) the vehicle_identity.compact contract on Midnight Network. The VIT is created with status=ACTIVE, transferCount=0, serviceCount=0, lastRecordedMileage=0. DUST consumed from ShieldVIN's reserve.</div></div></li>
+        <li><span class="step-n">3.5</span><div><div class="step-t">Initial ownership commitment set</div><div class="step-d">OEM generates an initial ownershipHash (H(ownerSecret)) using a 32-byte random secret. This represents OEM ownership before first sale. The secret is stored in the OEM's secure system pending first ownership transfer.</div></div></li>
+        <li><span class="step-n">3.6</span><div><div class="step-t">Minting confirmation</div><div class="step-d">VAP-1 returns a mintingReceipt (transaction ID + VIT contract address/token ID). Stored in OEM's production records. Vehicle leaves the production line with a live cryptographic identity.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Per-Vehicle Minting Fee</div><div class="fee-desc">Volume-tiered fee per VIT created. Ultra-scale (3M+/yr): $3–5. Large OEM (1M–3M): $8–12. Mid (100K–1M): $12–18. Small (&lt;100K): $20–25. Billed monthly by invoice.</div><div class="fee-payer">Payer: OEM</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for the VIT minting transaction. Paid from ShieldVIN's DUST reserve. Never billed to the OEM.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: VIT minted — vehicle_identity.compact deployed or registry entry created</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 4: Dealer Supply -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="oem dealer shieldvin" id="phase-4">
+    <div class="phase-header" onclick="togglePhase('phase-4')">
+      <div class="phase-num">04</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Dealer Supply — Vehicle to Dealership</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-oem">OEM / Manufacturer</span>
+          <span class="pill pill-dealer">Dealer</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-none">— NO FEE at this step</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>The vehicle is transported from the OEM factory to an authorised dealer. The Dealer Portal is notified of incoming stock. The vehicle identity is visible to the dealer from the moment of VIT minting — dealers can verify vehicle identity via the Dealer Portal at any point during their stock holding period.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">4.1</span><div><div class="step-t">Dealer credential issuance</div><div class="step-d">OEM or ShieldVIN issues the dealer with a VAP-1 dealer role credential. This gives the dealer access to their Dealer Portal and the ability to query and transfer VINs assigned to their inventory.</div></div></li>
+        <li><span class="step-n">4.2</span><div><div class="step-t">Stock visibility</div><div class="step-d">Dealer can query VIN status via the Dealer Portal immediately. Status=ACTIVE. All public ledger fields are visible (status, transferCount=0, serviceCount=0, lastRecordedMileage=0).</div></div></li>
+        <li><span class="step-n">4.3</span><div><div class="step-t">Dealer-side verification (optional)</div><div class="step-d">Dealer may run a live ZK proof via the Dealer Portal to confirm the vehicle's chips match the VIT before accepting delivery. Detects any transit tampering before stock is accepted.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card none"><div class="fee-label">— NO FEE</div><div class="fee-desc">Supplying a vehicle to a dealer does not trigger a ShieldVIN fee event. The OEM has already paid the minting fee. Dealer subscription covers portal access.</div></div>
+      </div>
+      <div class="on-chain-badge">◈ No new Midnight Network transaction — VIT already live</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 5: New Vehicle Sale -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="dealer owner shieldvin midnight" id="phase-5">
+    <div class="phase-header" onclick="togglePhase('phase-5')">
+      <div class="phase-num">05</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">New Vehicle Sale — Dealer to First Owner</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-dealer">Dealer</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Dealer subscription</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+          <span class="pill pill-free">✓ FREE — Buyer's first check</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>At point of sale, the dealer executes an ownership transfer via the Dealer Portal. The first buyer's ownership commitment is written to the Midnight Network VIT. The buyer receives a vehicle identity certificate and access to their vehicle record via the Owner Portal. The dealer's subscription covers this operation — no per-transfer fee to either party.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">5.1</span><div><div class="step-t">Pre-sale identity verification</div><div class="step-d">Dealer runs a live ZK proof via the Dealer Portal to confirm vehicle identity before completing the sale. Confirms status=ACTIVE, 0 prior transfers, chip keys match VIT.</div></div></li>
+        <li><span class="step-n">5.2</span><div><div class="step-t">Buyer commitment generation</div><div class="step-d">The buyer generates a 32-byte random owner secret (via TN-3 device credential or Owner App). The dealer's system receives the buyer's commitment hash H(ownerSecret). The secret never leaves the buyer's device.</div></div></li>
+        <li><span class="step-n">5.3</span><div><div class="step-t">Ownership transfer on-chain</div><div class="step-d">Dealer calls the VAP-1 ownership transfer endpoint. The transferOwnership() circuit updates ownershipHash to the buyer's commitment and increments transferCount to 1. DUST consumed from ShieldVIN's reserve.</div></div></li>
+        <li><span class="step-n">5.4</span><div><div class="step-t">Vehicle identity certificate issued</div><div class="step-d">Dealer Portal generates a printable vehicle identity certificate for the buyer's handover documentation. Includes VIN, minting date, factory code, QR code linking to the live status page.</div></div></li>
+        <li><span class="step-n">5.5</span><div><div class="step-t">Owner Portal access</div><div class="step-d">Buyer is invited to register their vehicle on the Owner Portal (my.shieldvin.org) using their owner secret. From this point they can view their vehicle's full on-chain record and generate ownership proofs.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Dealer Monthly Subscription</div><div class="fee-desc">Ownership transfer and identity verification are included in the dealer's monthly portal subscription ($199–$599/month by tier). No per-transfer fee.</div><div class="fee-payer">Payer: Dealer</div></div>
+        <div class="fee-card free"><div class="fee-label">✓ FREE — Buyer's Verification</div><div class="fee-desc">Private owners receive 1 free identity check per month via the Owner Portal. The first check at point of sale is included in this allowance.</div><div class="fee-payer">Payer: N/A (free allowance)</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for the transferOwnership() circuit call. Paid from ShieldVIN's DUST reserve. Not billed to the dealer or buyer.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: ownershipHash updated — transferCount incremented to 1</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 6: Government Registration -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="gov owner shieldvin" id="phase-6">
+    <div class="phase-header" onclick="togglePhase('phase-6')">
+      <div class="phase-num">06</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Government Registration — DMV / DVLA</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-gov">Government / DMV</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-fiat">💳 FIAT — Government contract</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>The owner registers the vehicle with the relevant government authority (DVLA in the UK, DMV in the US, etc.). The government queries the ShieldVIN API to verify the vehicle's identity and ownership chain before issuing registration documentation. This is billed under an enterprise government contract — not per-query.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">6.1</span><div><div class="step-t">Registration application</div><div class="step-d">Owner applies for vehicle registration with the national authority. Provides VIN, purchase documentation, and optionally their ShieldVIN ownership proof (generated from the Owner Portal).</div></div></li>
+        <li><span class="step-n">6.2</span><div><div class="step-t">Government identity query</div><div class="step-d">The government agency queries the ShieldVIN VAP-1 API using their government role credential. verifyGovernment() circuit returns: status, VIN, transferCount, lastRecordedMileage, lastMilestoneTimestamp.</div></div></li>
+        <li><span class="step-n">6.3</span><div><div class="step-t">Registration issued</div><div class="step-d">Government issues registration certificate/V5C/title document. The ShieldVIN VIT transaction ID or token reference may be recorded in the national vehicle register as a cryptographic provenance link.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Government Enterprise Contract</div><div class="fee-desc">Governments are billed on a contract model (one-time integration fee + annual maintenance per jurisdiction). Not per-query — government agencies cannot be billed per-query under public procurement rules.</div><div class="fee-payer">Payer: Government agency</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: verifyGovernment() proof generated — read-only, no state change</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 7: Insurance & Finance -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="insurer finance owner shieldvin" id="phase-7">
+    <div class="phase-header" onclick="togglePhase('phase-7')">
+      <div class="phase-num">07</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Insurance &amp; Finance / Lender Queries</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-insurer">Insurance</span>
+          <span class="pill pill-finance">Finance / Lender</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-fiat">💳 FIAT — API query fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>Insurers and finance lenders query the ShieldVIN Verification API when underwriting a new policy or approving a vehicle finance application. Both roles receive the same verified data: vehicle identity, ownership depth, service history count, and verified mileage. Each query is billed individually at the API query rate. Mileage is verified on-chain — not self-reported — making this a uniquely trustworthy input for premium calculation and loan-to-value assessment.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">7.1</span><div><div class="step-t">API query — identity + mileage</div><div class="step-d">Insurer or lender submits a VAP-1 query (insurer role credential) with the vehicle VIN. verifyInsurer() circuit returns: status, transferCount (ownership depth), serviceCount, lastRecordedMileage, lastMilestoneTimestamp.</div></div></li>
+        <li><span class="step-n">7.2</span><div><div class="step-t">Underwriting / credit decision</div><div class="step-d">The verified data is fed into the insurer's or lender's underwriting model. On-chain mileage is the key differentiator — it cannot be clock-rolled or self-reported. Finance lenders use the same data to calculate loan-to-value.</div></div></li>
+        <li><span class="step-n">7.3</span><div><div class="step-t">Policy or loan issued</div><div class="step-d">Insurance policy or finance agreement issued. The ShieldVIN verification transaction reference may be recorded in the policy file as evidence of due diligence.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — API Query Fee</div><div class="fee-desc">Per-query fee for insurance and finance lenders. Ownership verification: $1.75–$2.50 per query. Billed monthly via card or direct debit. Same rate applies to both insurers and finance lenders.</div><div class="fee-payer">Payer: Insurance company or Finance lender</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: verifyInsurer() proof generated — discloses status, transferCount, serviceCount, lastRecordedMileage, lastMilestoneTimestamp</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 8: Service Events & Mileage Recording -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="service owner shieldvin midnight" id="phase-8">
+    <div class="phase-header" onclick="togglePhase('phase-8')">
+      <div class="phase-num">08</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Service Events &amp; On-Chain Mileage Recording</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-service">Service Centre</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Service centre subscription</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>Each time a vehicle is serviced, the service centre records the event on-chain via the Dealer/Service Portal. This increments the serviceCount and — critically — records the verified odometer reading (lastRecordedMileage) and service timestamp on Midnight Network. Because the mileage can only be written by a credentialled service provider and the smart contract enforces that mileage cannot decrease, this creates a tamper-resistant verified mileage history. Odometer fraud — one of the most common used vehicle scams — becomes provably impossible for ShieldVIN-registered vehicles.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">8.1</span><div><div class="step-t">Vehicle arrives for service</div><div class="step-d">Service centre verifies vehicle identity via the Portal before work begins. Live ZK proof confirms the three chips match the VIT (prevents working on a cloned vehicle).</div></div></li>
+        <li><span class="step-n">8.2</span><div><div class="step-t">Service completed</div><div class="step-d">Vehicle serviced per OEM or service schedule. Work recorded in the service centre's own off-chain management system.</div></div></li>
+        <li><span class="step-n">8.3</span><div><div class="step-t">On-chain service event recorded</div><div class="step-d">Service centre calls the VAP-1 record-service endpoint with: VIN, mileage reading (from the vehicle's instrument cluster or TN-3 telematics), service timestamp. recordService() circuit asserts mileage ≥ last reading, increments serviceCount, updates lastRecordedMileage and lastMilestoneTimestamp on Midnight Network.</div></div></li>
+        <li><span class="step-n">8.4</span><div><div class="step-t">Service confirmation to owner</div><div class="step-d">Owner receives a notification via the Owner Portal/App that a service event has been recorded. They can see the updated serviceCount and verified mileage in their vehicle record.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Service Centre Monthly Subscription</div><div class="fee-desc">Service centres subscribe at the same tier as dealers ($199–$599/month). Service event recording and identity verification are included in the subscription. No per-event fee.</div><div class="fee-payer">Payer: Service Centre</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for the recordService() circuit call. Paid from ShieldVIN's DUST reserve. Not billed to the service centre or owner.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: serviceCount incremented — lastRecordedMileage and lastMilestoneTimestamp updated</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 9: Used Vehicle Sale — Dealer -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="dealer owner shieldvin midnight" id="phase-9">
+    <div class="phase-header" onclick="togglePhase('phase-9')">
+      <div class="phase-num">09</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Used Vehicle Sale — Dealer</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-dealer">Dealer</span>
+          <span class="pill pill-owner">Private Owner (seller &amp; buyer)</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Dealer subscription</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>A used vehicle sold through a dealer follows a similar process to the first sale. The dealer verifies the vehicle's identity and full history before accepting it as trade-in or stock. At point of sale to the new owner, the ownership transfer is executed on-chain. The verified mileage and complete service count are displayed to the buyer as part of the handover documentation — providing a level of provenance that no paper service record can match.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">9.1</span><div><div class="step-t">Vehicle history check</div><div class="step-d">Dealer queries VIN via Dealer Portal before accepting trade-in. Receives: status, transferCount (number of previous owners), serviceCount, lastRecordedMileage, lastMilestoneTimestamp. Live ZK proof confirms physical identity match.</div></div></li>
+        <li><span class="step-n">9.2</span><div><div class="step-t">Seller ownership proof</div><div class="step-d">Seller generates an ownership proof from their Owner Portal or TN-3 device. This proves they hold the current ownershipHash preimage — confirming they are the registered owner before transfer.</div></div></li>
+        <li><span class="step-n">9.3</span><div><div class="step-t">Ownership transfer on-chain</div><div class="step-d">New buyer generates their commitment. Dealer executes the transferOwnership() circuit. ownershipHash updated, transferCount incremented.</div></div></li>
+        <li><span class="step-n">9.4</span><div><div class="step-t">Buyer receives vehicle identity certificate</div><div class="step-d">Certificate shows verified mileage, service count, number of previous owners — all from the immutable on-chain record. Printable for the handover pack.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Dealer Monthly Subscription</div><div class="fee-desc">Ownership transfer and history check are included in the dealer's monthly subscription. No per-transfer fee for dealer-mediated sales.</div><div class="fee-payer">Payer: Dealer</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for transferOwnership(). Paid from ShieldVIN's DUST reserve.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: ownershipHash updated — transferCount incremented</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 10: Private Sale (P2P) -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="owner shieldvin midnight" id="phase-10">
+    <div class="phase-header" onclick="togglePhase('phase-10')">
+      <div class="phase-num">10</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Private Sale — Person to Person</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-owner">Private Owner (seller &amp; buyer)</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — $5 flat private transfer fee</span>
+          <span class="pill pill-free">✓ FREE — Buyer's 1 free monthly check</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>Private vehicle sales between individuals (classified ads, direct sales) are the highest-risk fraud environment. ShieldVIN resolves this by giving the buyer a cryptographic identity check and giving the seller a trustworthy, shareable vehicle history. The transfer is completed via the Owner Portal for both parties — no dealer or broker required. A flat $5 fee applies to the private ownership transfer (Stream 4 revenue).</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">10.1</span><div><div class="step-t">Seller shares verification QR</div><div class="step-d">Seller generates a time-limited QR code from their Owner Portal. QR links to a live status page showing the vehicle's on-chain record (status, transferCount, serviceCount, lastRecordedMileage) — no personal data exposed.</div></div></li>
+        <li><span class="step-n">10.2</span><div><div class="step-t">Buyer verification check</div><div class="step-d">Buyer scans QR or enters VIN in the Owner Portal. Receives cached status check (sub-second). If this is the buyer's first check this month, it is free. Subsequent checks are billed at the API query rate. The check confirms: status=ACTIVE, mileage, service count, ownership count.</div></div></li>
+        <li><span class="step-n">10.3</span><div><div class="step-t">Live ZK proof (optional, pre-purchase)</div><div class="step-d">Buyer may optionally request a live ZK proof (≤30 seconds) to confirm the physical vehicle matches the VIT — not just the cached status. Recommended for high-value private sales.</div></div></li>
+        <li><span class="step-n">10.4</span><div><div class="step-t">Seller proves ownership</div><div class="step-d">Seller generates an ownership proof from their Owner Portal (proves knowledge of the ownershipHash preimage). Shared with the buyer as confirmation that the seller is the legitimate registered owner.</div></div></li>
+        <li><span class="step-n">10.5</span><div><div class="step-t">Ownership transfer on-chain</div><div class="step-d">Both parties complete the transfer via the Owner Portal. Buyer's new commitment is set, transferCount incremented. Both parties receive a transfer confirmation certificate.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — $5 Private Transfer Fee</div><div class="fee-desc">Flat $5 fee per private ownership transfer. Paid by the seller (or buyer — by agreement). Billed via card, Apple Pay, or Google Pay. No recurring subscription needed.</div><div class="fee-payer">Payer: Private seller or buyer</div></div>
+        <div class="fee-card free"><div class="fee-label">✓ FREE — 1st Buyer Check Per Month</div><div class="fee-desc">Private owners and prospective buyers receive 1 free vehicle identity check per month via the Owner Portal. Additional checks billed at the API query rate.</div><div class="fee-payer">Payer: N/A (monthly allowance)</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for transferOwnership(). Paid from ShieldVIN's DUST reserve.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: ownershipHash updated — transferCount incremented</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 11: Law Enforcement Check -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="leo gov shieldvin" id="phase-11">
+    <div class="phase-header" onclick="togglePhase('phase-11')">
+      <div class="phase-num">11</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Law Enforcement — Roadside &amp; Investigation</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-leo">Law Enforcement</span>
+          <span class="pill pill-gov">Government</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-fiat">💳 FIAT — Government enterprise contract</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>Law enforcement agencies — police, border agencies, customs — use the Government Portal (or a dedicated mobile law enforcement client) for roadside vehicle checks and investigation queries. A cached status check returns in under 1 second for routine checkpoints. A live ZK proof (≤30 seconds) is used when the physical identity of the vehicle needs to be cryptographically confirmed against its chips. If a vehicle is flagged as stolen, the officer can see the VIN; otherwise the VIN is withheld from the proof.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">11.1</span><div><div class="step-t">Cached status check (routine checkpoint)</div><div class="step-d">Officer queries VIN via Government Portal or mobile client. Cached status returned: ACTIVE / STOLEN / FLAGGED / RECOVERED. Sub-second response. Covers routine checkpoint volume without generating a ZK proof each time.</div></div></li>
+        <li><span class="step-n">11.2</span><div><div class="step-t">Live ZK proof (suspected fraud/investigation)</div><div class="step-d">For suspected cloned VINs or investigation cases, officer triggers a live ZK proof. verifyPolice() circuit challenges the vehicle's three SE chips. If chips don't match the VIT → proof fails → identity rejected. Confirms the physical vehicle is the registered vehicle. Response ≤30 seconds.</div></div></li>
+        <li><span class="step-n">11.3</span><div><div class="step-t">Stolen disclosure</div><div class="step-d">If status=STOLEN, the verifyPolice() circuit additionally discloses the VIN (for cross-referencing with national registers and initiating recovery). Other roles do not receive this VIN disclosure.</div></div></li>
+        <li><span class="step-n">11.4</span><div><div class="step-t">Stolen flag (report)</div><div class="step-d">Officer can file a stolen report via the Government Portal. flagStolen() circuit sets status=STOLEN on the VIT. This is immediate and global — any subsequent query on this VIN returns STOLEN to all roles.</div></div></li>
+        <li><span class="step-n">11.5</span><div><div class="step-t">Evidence pack export</div><div class="step-d">For prosecution cases, the Government Portal generates a signed evidence pack (PDF + proof hash) documenting the verification result, proof timestamp, and chain of custody for court use.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Government Enterprise Contract</div><div class="fee-desc">Law enforcement access is included in the government jurisdiction contract. Not billed per-query. Model: one-time integration fee + annual maintenance per jurisdiction.</div><div class="fee-payer">Payer: Government / Police Authority</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: verifyPolice() proof generated — flagStolen() writes STOLEN status if officer files report</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 12: Recall Management -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="oem gov owner shieldvin midnight" id="phase-12">
+    <div class="phase-header" onclick="togglePhase('phase-12')">
+      <div class="phase-num">12</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Recall Management</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-oem">OEM / Manufacturer</span>
+          <span class="pill pill-gov">Government / DMV</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Per-VIN recall event fee</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>When an OEM issues a product recall, the recall flag is set on every affected VIT simultaneously via the Manufacturer Portal. This instantly makes the recall visible to every stakeholder who queries those vehicles — dealers, government agencies, insurers, and the owner via their portal. The OEM pays a per-VIN recall event fee to ShieldVIN. The DUST cost of writing to Midnight Network is handled internally by ShieldVIN and is not passed to the OEM.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">12.1</span><div><div class="step-t">Recall batch definition</div><div class="step-d">OEM identifies affected VINs by date range, model line, factory code, or explicit VIN list. Manufacturer Portal supports bulk selection tools.</div></div></li>
+        <li><span class="step-n">12.2</span><div><div class="step-t">Recall flag written on-chain</div><div class="step-d">setRecallFlag() circuit called for each affected VIT. Sets status=FLAGGED. DUST consumed per transaction from ShieldVIN's reserve. OEM is billed a flat Fiat fee per affected VIN (not per DUST transaction).</div></div></li>
+        <li><span class="step-n">12.3</span><div><div class="step-t">Owner notification</div><div class="step-d">Owner Portal and App push a notification to all registered owners of affected vehicles. Government and dealer portals show recall flags in their dashboards.</div></div></li>
+        <li><span class="step-n">12.4</span><div><div class="step-t">Recall service completed</div><div class="step-d">After the recall service is completed at an authorised dealer or service centre, the service event is recorded on-chain (mileage + service count updated) and the OEM clears the recall flag using clearRecallFlag() — restoring status=ACTIVE.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Per-VIN Recall Event Fee</div><div class="fee-desc">OEM pays a flat Fiat fee per VIN for each recall flag set. This covers both the flag and subsequent flag clearance. Billed by invoice at end of month.</div><div class="fee-payer">Payer: OEM</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fees for setRecallFlag() and clearRecallFlag() calls. Paid from ShieldVIN's DUST reserve. Not passed to the OEM.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: status=FLAGGED written per VIT — clearRecallFlag() restores ACTIVE after service</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 13: Hardware Recovery -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="dealer oem owner shieldvin midnight" id="phase-13">
+    <div class="phase-header" onclick="togglePhase('phase-13')">
+      <div class="phase-num">13</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Hardware Recovery — Node Key Rotation</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-dealer">Dealer / OEM Service</span>
+          <span class="pill pill-oem">OEM / Manufacturer</span>
+          <span class="pill pill-owner">Private Owner</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Hardware recovery fee</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>In the rare event that a Secure Element chip fails due to hardware fault, collision damage, or an OEM-initiated recall of a specific chip batch, a controlled node key rotation procedure is required. This is a multi-party process governed by the VAP-1 hardware-recovery.md specification. The two surviving nodes must co-sign the recovery nonce to prove physical continuity with the registered vehicle. The OEM authorises the replacement chip's new public key. ShieldVIN updates the VIT on-chain.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">13.1</span><div><div class="step-t">Recovery initiated</div><div class="step-d">Dealer or OEM service centre identifies the failed node (EN-1, CN-2, or TN-3). Initiates a hardware recovery request via the Manufacturer Portal (OEM) or Dealer Portal. Vehicle owner notified.</div></div></li>
+        <li><span class="step-n">13.2</span><div><div class="step-t">Surviving node co-signature</div><div class="step-d">The two surviving SE chips sign a recovery nonce, proving the vehicle chassis and engine identity are intact. TN-3 assembles the two signatures as witness data for the recovery proof.</div></div></li>
+        <li><span class="step-n">13.3</span><div><div class="step-t">OEM authorisation</div><div class="step-d">OEM confirms the replacement chip's new public key via the Manufacturer Portal (ownPublicKey() check against authorizedMinterKey). Prevents unauthorised key substitution.</div></div></li>
+        <li><span class="step-n">13.4</span><div><div class="step-t">On-chain key rotation</div><div class="step-d">nodeKeyRotation() circuit called on the VIT. The failed node's public key is replaced with the new chip's public key. All three keys are again live. ZK proof generation resumes normally.</div></div></li>
+        <li><span class="step-n">13.5</span><div><div class="step-t">Recovery record</div><div class="step-d">Node rotation history visible in the Government Portal and Manufacturer Portal. Buyers can see whether a vehicle has undergone a hardware recovery — this is disclosed as part of the provenance record.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Hardware Recovery Fee</div><div class="fee-desc">One-time fee per node rotation event. Covers the multi-party coordination and on-chain update. Billed to the OEM or dealer executing the recovery, by invoice.</div><div class="fee-payer">Payer: OEM or Dealer</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for nodeKeyRotation() circuit call. Paid from ShieldVIN's DUST reserve.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: en1PublicKey / cn2PublicKey / tn3PublicKey updated via nodeKeyRotation()</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <!-- PHASE 14: Decommission -->
+  <!-- ═══════════════════════════════════════════════════════ -->
+  <div class="phase" data-roles="gov oem shieldvin midnight" id="phase-14">
+    <div class="phase-header" onclick="togglePhase('phase-14')">
+      <div class="phase-num">14</div>
+      <div class="phase-summary">
+        <div class="phase-title-row">
+          <span class="phase-name">Decommission — End of Vehicle Life</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="pills-row">
+          <span class="pill pill-gov">Government / DMV</span>
+          <span class="pill pill-oem">OEM / Insurance</span>
+          <span class="pill pill-shieldvin">ShieldVIN</span>
+          <span class="pill pill-midnight">Midnight Network</span>
+          <span class="pill pill-fiat">💳 FIAT — Decommission fee</span>
+          <span class="pill pill-dust">◈ DUST — Internal tx fee</span>
+        </div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p>When a vehicle is written off, scrapped, or declared a total loss, the VIT is decommissioned. Status is permanently set to DECOMMISSIONED on Midnight Network. This prevents a scrapped vehicle's VIN from being reassigned to a salvage or cloned vehicle. The decommission can be triggered by a government authority, by the OEM (for warranty write-offs), or by an insurer following a total-loss claim — each via their respective portal with an appropriate role credential.</p>
+      <div class="body-section-title">Steps</div>
+      <ul class="steps">
+        <li><span class="step-n">14.1</span><div><div class="step-t">Decommission trigger</div><div class="step-d">Government agency (end-of-life vehicle regulation), OEM (warranty write-off), or insurer (total-loss claim) initiates decommission via their portal. Reason code provided (write-off, salvage, export, end-of-life).</div></div></li>
+        <li><span class="step-n">14.2</span><div><div class="step-t">Decommission written on-chain</div><div class="step-d">decommission(reason) circuit called. Sets status=DECOMMISSIONED permanently. Once set, no further lifecycle operations can be executed on this VIT. The record remains readable but immutable.</div></div></li>
+        <li><span class="step-n">14.3</span><div><div class="step-t">Owner notification</div><div class="step-d">Owner (if still registered) notified via Owner Portal. Government registration databases notified. Any future query on this VIN returns DECOMMISSIONED immediately.</div></div></li>
+        <li><span class="step-n">14.4</span><div><div class="step-t">Chip destruction confirmed</div><div class="step-d">In regulated end-of-life scenarios (EU ELV Directive), the decommissioning authority confirms physical chip destruction. This prevents chip extraction and reuse in a cloned vehicle.</div></div></li>
+      </ul>
+      <div class="body-section-title">Fees &amp; Costs</div>
+      <div class="fees-grid">
+        <div class="fee-card fiat"><div class="fee-label">💳 FIAT — Decommission Fee</div><div class="fee-desc">One-time fee for the decommission write to Midnight Network. Billed to the triggering party (government, OEM, or insurer) depending on the decommission scenario.</div><div class="fee-payer">Payer: Government agency, OEM, or Insurance company</div></div>
+        <div class="fee-card dust"><div class="fee-label">◈ DUST — Internal Tx Fee</div><div class="fee-desc">Midnight Network transaction fee for decommission() circuit call. Paid from ShieldVIN's DUST reserve.</div><div class="fee-payer">Payer: ShieldVIN (internal)</div></div>
+      </div>
+      <div class="on-chain-badge">◈ Midnight Network: status=DECOMMISSIONED written — VIT is now permanently closed</div>
+    </div>
+  </div>
+
+</div><!-- end flow-container -->
+
+<!-- ── FOOTER ─────────────────────────────────────────────── -->
+<div style="text-align:center; padding: 2rem; color: var(--text-m); font-size: 0.8rem; border-top: 1px solid var(--border); margin-top: 2rem;">
+  ShieldVIN — Vehicle Identity Token · Midnight Network · All client fees billed in fiat currency.
+  DUST is an internal operational cost only. <br>This process overview is a conceptual representation. Actual implementation subject to Midnight Network technical review.
+</div>
+
+<script>
+  // ── TOGGLE PHASE ───────────────────────────────────────────
+  function togglePhase(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('open');
+  }
+
+  // ── EXPAND / COLLAPSE ALL ──────────────────────────────────
+  document.getElementById('expandAll').addEventListener('click', () => {
+    document.querySelectorAll('.phase:not(.dimmed)').forEach(p => p.classList.add('open'));
+  });
+  document.getElementById('collapseAll').addEventListener('click', () => {
+    document.querySelectorAll('.phase').forEach(p => p.classList.remove('open'));
+  });
+
+  // ── ROLE FILTER ────────────────────────────────────────────
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const phases = document.querySelectorAll('.phase');
+  const counter = document.getElementById('phaseCounter');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const role = btn.dataset.role;
+      let visible = 0;
+
+      phases.forEach(phase => {
+        const roles = phase.dataset.roles || '';
+        if (role === 'all' || roles.split(' ').includes(role)) {
+          phase.classList.remove('dimmed');
+          visible++;
+        } else {
+          phase.classList.add('dimmed');
+          phase.classList.remove('open');
+        }
+      });
+
+      if (role === 'all') {
+        counter.textContent = `Showing all 14 phases`;
+      } else {
+        const label = btn.textContent.trim();
+        counter.textContent = `Showing ${visible} phase${visible !== 1 ? 's' : ''} for ${label}`;
+      }
+    });
+  });
+</script>
+</body>
+</html>

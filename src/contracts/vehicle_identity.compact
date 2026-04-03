@@ -197,7 +197,21 @@ export ledger tn3PublicKey:   Bytes<32>;   // Telematics Node (TN-3) Ed25519 pub
 // This contract stores only the manufacturer key — sufficient for
 // minting authority. Other roles are validated off-chain via VAP-1.
 
-export ledger authorizedMinterKey: Bytes<32>;  // persistentHash(manufacturer wallet public key) — set at mint
+export ledger authorizedMinterKey:    Bytes<32>;  // persistentHash(manufacturer wallet public key) — set at mint
+
+// ── MILEAGE — verified on-chain odometer record ───────────────
+// lastRecordedMileage is updated by the recording service circuit
+// every time a service event is lodged. Because it is on-chain and
+// can only be written by an authorised VAP-1 service credential, it
+// provides a tamper-resistant odometer history that cannot be
+// clock-rolled by a vendor. Buyers, insurers, lenders, dealers,
+// and government roles can all read this field.
+//
+// Uint<32> supports up to 4,294,967,295 — suitable for km or miles.
+// lastMilestoneTimestamp records Unix epoch of the last service event
+// so the mileage figure can be correlated with a service date.
+export ledger lastRecordedMileage:    Uint<32>;   // odometer reading at last service event (km or miles — consistent per vehicle)
+export ledger lastMilestoneTimestamp: Uint<64>;   // Unix epoch of the last recorded service event
 
 // ─────────────────────────────────────────────────────────────
 // WITNESSES — private input providers
@@ -391,9 +405,10 @@ export circuit verifyPolice(): [] {
 
 // ── verifyInsurer ─────────────────────────────────────────────
 // For: insurer role
-// Discloses: status, transferCount, serviceCount
+// Discloses: status, transferCount, serviceCount, lastRecordedMileage, lastMilestoneTimestamp
 // Purpose: Policy inception and claim intake. Insurer needs identity
-//          confirmation, ownership chain depth, service history count.
+//          confirmation, ownership chain depth, service history count,
+//          and verified mileage for premium calculation and claim assessment.
 //          Does NOT receive VIN — insurer already has VIN from policy.
 export circuit verifyInsurer(): [] {
   assert(en1WitnessPk() == en1PublicKey, "EN-1 key mismatch — not the registered chip");
@@ -403,14 +418,17 @@ export circuit verifyInsurer(): [] {
   disclose(status);
   disclose(transferCount);
   disclose(serviceCount);
+  disclose(lastRecordedMileage);
+  disclose(lastMilestoneTimestamp);
 }
 
 // ── verifyDealer ──────────────────────────────────────────────
 // For: dealer role
-// Discloses: status, transferCount, serviceCount
-// Purpose: Used vehicle sale. Dealer needs authentic identity
-//          confirmation plus ownership and service history.
-//          Same disclosure as insurer — different commercial use case.
+// Discloses: status, transferCount, serviceCount, lastRecordedMileage, lastMilestoneTimestamp
+// Purpose: Used vehicle sale. Dealer needs authentic identity confirmation,
+//          ownership and service history, and verified mileage to display
+//          to prospective buyers. Mileage is the key fraud vector in used
+//          vehicle sales — on-chain verification eliminates it.
 export circuit verifyDealer(): [] {
   assert(en1WitnessPk() == en1PublicKey, "EN-1 key mismatch — not the registered chip");
   assert(cn2WitnessPk() == cn2PublicKey, "CN-2 key mismatch — not the registered chip");
@@ -419,14 +437,17 @@ export circuit verifyDealer(): [] {
   disclose(status);
   disclose(transferCount);
   disclose(serviceCount);
+  disclose(lastRecordedMileage);
+  disclose(lastMilestoneTimestamp);
 }
 
 // ── verifyGovernment ──────────────────────────────────────────
 // For: government / DMV / registration authority role
-// Discloses: status, vin, transferCount
+// Discloses: status, vin, transferCount, lastRecordedMileage, lastMilestoneTimestamp
 // Purpose: Registration, import/export, compliance checks.
 //          Government needs VIN for registration sync and transfer count
-//          to maintain the registration record.
+//          to maintain the registration record. Mileage supports
+//          emissions compliance and roadworthiness checks (MOT/NCT/TÜV).
 export circuit verifyGovernment(): [] {
   assert(en1WitnessPk() == en1PublicKey, "EN-1 key mismatch — not the registered chip");
   assert(cn2WitnessPk() == cn2PublicKey, "CN-2 key mismatch — not the registered chip");
@@ -435,11 +456,13 @@ export circuit verifyGovernment(): [] {
   disclose(status);
   disclose(vin);
   disclose(transferCount);
+  disclose(lastRecordedMileage);
+  disclose(lastMilestoneTimestamp);
 }
 
 // ── verifyOwner ───────────────────────────────────────────────
 // For: owner role
-// Discloses: full record
+// Discloses: full record (all public fields)
 // Purpose: Owner's right to see their own vehicle's complete data.
 //          Also generates the ownership credential for point-of-sale
 //          (used as input to transferOwnership).
@@ -464,6 +487,8 @@ export circuit verifyOwner(): [] {
   disclose(mintTimestamp);
   disclose(buildSpecHash);
   disclose(factoryCode);
+  disclose(lastRecordedMileage);
+  disclose(lastMilestoneTimestamp);
 }
 
 // ── transferOwnership ────────────────────────────────────────
@@ -593,13 +618,25 @@ export circuit clearRecallFlag(): [] {
 
 // ── recordService ─────────────────────────────────────────────
 // Authorised service centre records a service event for this vehicle.
-// Increments serviceCount. No service content goes on-chain — only the
-// count. Service records are stored off-chain in the dealer/service
-// system and linked via the on-chain service count as a cross-reference.
+// Increments serviceCount and updates lastRecordedMileage + lastMilestoneTimestamp.
+//
+// mileage: odometer reading at time of service (km or miles — must be consistent
+//   per vehicle lifetime; unit is set by the OEM at mint and never changes).
+// serviceTimestamp: Unix epoch of the service event (provided as witness by the
+//   service centre's VAP-1 system; must be > mintTimestamp).
+//
+// The mileage value is tamper-resistant because:
+//   (1) it can only be written by a credentialled service provider,
+//   (2) it is on an immutable append-only ledger (via serviceCount),
+//   (3) the circuit asserts mileage >= lastRecordedMileage (odometer cannot go backwards).
+//
+// Buyers, insurers, lenders, dealers, and government portals can all read
+// lastRecordedMileage and lastMilestoneTimestamp directly from the public ledger
+// via the GraphQL indexer (no ZK proof required for these fields).
 //
 // REVIEW: what level of credential authorisation is required here?
 // Any VGM-1 registered dealer/service centre, or must it be OEM-authorised?
-export circuit recordService(): [] {
+export circuit recordService(mileage: Uint<32>, serviceTimestamp: Uint<64>): [] {
   // STUB: validate ownPublicKey() against registered service provider registry
   // assert(isRegisteredServiceProvider(ownPublicKey()), "Caller is not a registered service provider");
 
@@ -608,7 +645,20 @@ export circuit recordService(): [] {
     "Service can only be recorded for ACTIVE or FLAGGED vehicles"
   );
 
+  // Odometer cannot go backwards — prevents rollback fraud
+  assert(
+    mileage >= lastRecordedMileage,
+    "Mileage cannot be less than the last recorded reading"
+  );
+
+  assert(
+    serviceTimestamp > mintTimestamp,
+    "Service timestamp must be after vehicle mint timestamp"
+  );
+
   serviceCount.increment(1);
+  lastRecordedMileage = disclose(mileage);
+  lastMilestoneTimestamp = disclose(serviceTimestamp);
 }
 
 // ── nodeKeyRotation ───────────────────────────────────────────

@@ -76,7 +76,8 @@
     gap: 14px;
     margin-bottom: 28px;
   }
-  @media (max-width: 500px) { .cards { grid-template-columns: 1fr; } }
+  .card-full { grid-column: 1 / -1; }
+  @media (max-width: 500px) { .cards { grid-template-columns: 1fr; } .card-full { grid-column: auto; } }
 
   .card {
     background: var(--card);
@@ -214,6 +215,12 @@
       <div class="card-title">Market Opportunity</div>
       <div class="card-desc">Toyota · BYD · Ford US adoption scenarios with live revenue modelling sliders.</div>
       <div class="card-action">EXPLORE →</div>
+    </a>
+    <a href="process-flow.html" class="card c-cyan card-full">
+      <div class="card-icon">🔄</div>
+      <div class="card-title">Process Overview</div>
+      <div class="card-desc">End-to-end lifecycle — chip manufacture to decommission. All 14 phases, every role, every fee trigger. Filterable by stakeholder.</div>
+      <div class="card-action">VIEW FLOW →</div>
     </a>
   </div>
 
