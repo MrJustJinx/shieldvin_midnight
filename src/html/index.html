@@ -29,7 +29,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 32px 20px;
+    padding: 96px 20px 32px;
   }
 
   .wrap { max-width: 680px; width: 100%; text-align: center; }
@@ -161,9 +161,61 @@
     padding: 4px 12px;
     letter-spacing: 0.08em;
   }
+
+  /* ─── NAVIGATION ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(4,13,30,0.92);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(109,53,232,0.3);
+    padding: 0 2rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; flex-shrink: 0; }
+  .nav-logo { width: 36px; height: 36px; flex-shrink: 0; }
+  .nav-title { font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1rem; color: #eef2ff; letter-spacing: 0.02em; }
+  .nav-title span { color: #00d4ff; }
+  .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+  .nav-links a { color: #94a3c0; text-decoration: none; font-size: 0.82rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: #00d4ff; }
+  .nav-badge { background: rgba(109,53,232,0.2); border: 1px solid rgba(109,53,232,0.3); color: #9b70f0; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; padding: 4px 12px; border-radius: 100px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; white-space: nowrap; }
+  @media (max-width: 860px) { .nav-links { display: none; } }
+  @media (max-width: 500px) { .nav-badge { display: none; } }
 </style>
 </head>
 <body>
+
+<!-- ─── NAVIGATION ─── -->
+<nav>
+  <a class="nav-brand" href="https://mrjustjinx.github.io/shieldvin_midnight/" style="text-decoration:none;cursor:pointer;">
+    <svg class="nav-logo" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" stroke="rgba(109,53,232,0.4)" stroke-width="1"/>
+      <path d="M18 6 C10 6 6 12 6 18 C6 24 10 30 18 30" stroke="#6d35e8" stroke-width="2" stroke-linecap="round"/>
+      <path d="M18 9 C12 9 9 13.5 9 18" stroke="#00d4ff" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="18" cy="18" r="3" fill="#6d35e8"/>
+      <circle cx="18" cy="18" r="1.5" fill="#00d4ff"/>
+    </svg>
+    <div class="nav-title">ShieldVIN <span>× Midnight Network</span></div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shieldvin-summary.html">Summary</a></li>
+    <li><a href="shieldvin-demo.html">Demo</a></li>
+    <li><a href="whitepaper.html">Whitepaper</a></li>
+    <li><a href="market-opportunity.html">Market</a></li>
+    <li><a href="process-flow.html">Process</a></li>
+    <li><a href="glossary.html">Glossary</a></li>
+  </ul>
+  <span class="nav-badge">Concept Proposal — 2026</span>
+</nav>
+
 <div class="wrap">
 
   <a class="logo" href="https://mrjustjinx.github.io/shieldvin_midnight/" style="text-decoration:none;color:inherit;cursor:pointer;">Shield<span>VIN</span></a>
