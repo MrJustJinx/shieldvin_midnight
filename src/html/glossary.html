@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShieldVIN — Glossary of Terms & Abbreviations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:      #040d1e;
+    --card:    #0b1629;
+    --purple:  #6d35e8;
+    --purple-l:#9b70f0;
+    --cyan:    #00d4ff;
+    --text:    #eef2ff;
+    --text-s:  #94a3c0;
+    --text-m:  #5a6a8a;
+    --border:  rgba(109,53,232,0.25);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    min-height: 100vh;
+    padding: 40px 20px 60px;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-m);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    margin-bottom: 32px;
+    transition: color 0.2s;
+  }
+  .back-link:hover { color: var(--cyan); }
+
+  .logo {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+    text-decoration: none;
+    color: inherit;
+    display: inline-block;
+  }
+  .logo span { color: var(--cyan); }
+
+  .page-title {
+    font-family: 'Exo 2', sans-serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    font-weight: 700;
+    margin: 20px 0 8px;
+  }
+  .page-title span { color: var(--cyan); }
+
+  .page-sub {
+    font-size: 0.9rem;
+    color: var(--text-s);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-weight: 300;
+    max-width: 640px;
+  }
+
+  /* Search */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 32px;
+    max-width: 480px;
+  }
+  .search-wrap input {
+    width: 100%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px 12px 42px;
+    color: var(--text);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--cyan); }
+  .search-wrap input::placeholder { color: var(--text-m); }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-m);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  /* Category filters */
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .filter-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--text-m);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+  .filter-btn:hover { border-color: var(--purple-l); color: var(--purple-l); }
+  .filter-btn.active { background: var(--purple); border-color: var(--purple); color: #fff; }
+
+  /* Section headers */
+  .section {
+    margin-bottom: 40px;
+  }
+  .section-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--purple-l);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 10px;
+    margin-bottom: 16px;
+  }
+
+  /* Term entries */
+  .term-list { display: flex; flex-direction: column; gap: 2px; }
+
+  .term-entry {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 16px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--card);
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .term-entry:hover { border-color: var(--border); }
+  .term-entry.hidden { display: none; }
+
+  @media (max-width: 560px) {
+    .term-entry { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  .term-abbr {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--cyan);
+    align-self: start;
+    padding-top: 1px;
+    word-break: break-word;
+  }
+
+  .term-body {}
+  .term-full {
+    font-family: 'Exo 2', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .term-def {
+    font-size: 0.82rem;
+    color: var(--text-s);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+  .term-tag {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-top: 6px;
+    text-transform: uppercase;
+  }
+  .tag-hardware  { background: rgba(0,212,255,0.1);   color: var(--cyan); }
+  .tag-blockchain{ background: rgba(109,53,232,0.15); color: var(--purple-l); }
+  .tag-standard  { background: rgba(155,112,240,0.15);color: var(--purple-l); }
+  .tag-automotive{ background: rgba(148,163,192,0.1); color: var(--text-s); }
+  .tag-api       { background: rgba(0,212,255,0.08);  color: #7dd3fc; }
+  .tag-regulatory{ background: rgba(251,191,36,0.1);  color: #fbbf24; }
+  .tag-role      { background: rgba(52,211,153,0.1);  color: #34d399; }
+  .tag-sdk       { background: rgba(109,53,232,0.1);  color: var(--purple-l); }
+
+  /* No results */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-m);
+    font-size: 0.9rem;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 60px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    font-size: 0.75rem;
+    color: var(--text-m);
+    text-align: center;
+    line-height: 1.8;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="index.html" class="back-link">← Back to ShieldVIN</a>
+  <br>
+  <a href="https://mrjustjinx.github.io/shieldvin_midnight/" class="logo" style="text-decoration:none;">Shield<span>VIN</span></a>
+
+  <h1 class="page-title">Glossary of <span>Terms & Abbreviations</span></h1>
+  <p class="page-sub">All technical terms, standards, abbreviations, and project-specific identifiers used across ShieldVIN documentation, specifications, and code.</p>
+
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Search terms, abbreviations, definitions…" oninput="filterTerms()">
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('hardware', this)">Hardware</button>
+    <button class="filter-btn" onclick="setFilter('blockchain', this)">Blockchain</button>
+    <button class="filter-btn" onclick="setFilter('standard', this)">ShieldVIN Standards</button>
+    <button class="filter-btn" onclick="setFilter('sdk', this)">Midnight SDK</button>
+    <button class="filter-btn" onclick="setFilter('automotive', this)">Automotive</button>
+    <button class="filter-btn" onclick="setFilter('api', this)">API / Protocol</button>
+    <button class="filter-btn" onclick="setFilter('role', this)">Access Roles</button>
+    <button class="filter-btn" onclick="setFilter('regulatory', this)">Regulatory</button>
+  </div>
+
+  <div id="glossary-body">
+
+    <!-- ── HARDWARE ── -->
+    <div class="section" data-section="hardware">
+      <div class="section-header">Hardware</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">EN-1</div>
+          <div class="term-body">
+            <div class="term-full">Engine Node</div>
+            <div class="term-def">The first of three Secure Element chips embedded in a vehicle at manufacture. Located in the engine bay, housed within the ECU. Holds an independent Ed25519 keypair generated in hardware. Wipes its key if the ECU housing is physically breached. Must co-sign every identity proof alongside CN-2 and TN-3.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">CN-2</div>
+          <div class="term-body">
+            <div class="term-full">Chassis Node</div>
+            <div class="term-def">The second Secure Element chip. Embedded into the vehicle's structural chassis at the body-in-white stage during manufacture — physically part of the frame, not a bolt-on component. Holds an independent Ed25519 keypair. Triggers a tamper alert and key wipe if the frame is cut or structurally compromised.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">TN-3</div>
+          <div class="term-body">
+            <div class="term-full">Telematics Node</div>
+            <div class="term-def">The third Secure Element chip. Located behind the dashboard in the telematics module. Serves as the communication hub: collects signatures from EN-1 and CN-2, assembles witness data, and forwards it to the Proof Server for ZK proof generation. Holds its own independent Ed25519 keypair. Does NOT generate ZK proofs directly — that is the Proof Server's role.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">SE</div>
+          <div class="term-body">
+            <div class="term-full">Secure Element</div>
+            <div class="term-def">A tamper-resistant microchip designed to generate and store cryptographic keys in hardware. Keys are generated inside the chip and cannot be extracted — private key material never leaves the chip in plaintext. ShieldVIN uses one SE chip per vehicle node (EN-1, CN-2, TN-3), each generating its own independent Ed25519 keypair.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">ECU</div>
+          <div class="term-body">
+            <div class="term-full">Engine Control Unit</div>
+            <div class="term-def">The electronic control module that manages engine functions in a vehicle. The EN-1 Secure Element chip is housed inside the ECU enclosure. If the ECU housing is physically breached, EN-1 detects the intrusion and wipes its key, invalidating future identity proofs.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">CAN Bus</div>
+          <div class="term-body">
+            <div class="term-full">Controller Area Network Bus</div>
+            <div class="term-def">The primary communication network inside a vehicle that allows microcontrollers and devices to communicate without a central host computer. EN-1 and CN-2 communicate their signatures to TN-3 over the vehicle's CAN bus during proof generation.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="hardware">
+          <div class="term-abbr">Ed25519</div>
+          <div class="term-body">
+            <div class="term-full">Edwards-curve Digital Signature Algorithm (256-bit)</div>
+            <div class="term-def">The elliptic curve digital signature algorithm used by all three SE chips (EN-1, CN-2, TN-3) to sign identity proofs. Each chip generates its own independent Ed25519 keypair in hardware at the time of manufacture. Note: Midnight wallets use Schnorr/secp256k1 (BIP340) — Ed25519 is exclusive to the SE chips.</div>
+            <span class="term-tag tag-hardware">Hardware</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── BLOCKCHAIN / CRYPTOGRAPHY ── -->
+    <div class="section" data-section="blockchain">
+      <div class="section-header">Blockchain &amp; Cryptography</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">ZK / ZKP</div>
+          <div class="term-body">
+            <div class="term-full">Zero-Knowledge Proof</div>
+            <div class="term-def">A cryptographic method that allows one party to prove a statement is true to another party without revealing any information beyond the truth of that statement. ShieldVIN uses ZK proofs so each stakeholder receives only the specific facts they are entitled to (e.g. "stolen: yes/no") without exposing owner identity, build data, or other parties' information.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">PLONK</div>
+          <div class="term-body">
+            <div class="term-full">Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge</div>
+            <div class="term-def">The ZK proof system used by Midnight Network. A type of zk-SNARK that produces succinct proofs without requiring a trusted per-circuit setup. ShieldVIN proofs are generated using PLONK over BLS12-381 and JubJub curves.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">KZG</div>
+          <div class="term-body">
+            <div class="term-full">Kate-Zaverucha-Goldberg Commitment Scheme</div>
+            <div class="term-def">A polynomial commitment scheme used within Midnight's PLONK proving system. KZG commitments allow a prover to commit to a polynomial and later reveal evaluations at specific points, enabling succinct and efficiently verifiable proofs.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">BLS12-381</div>
+          <div class="term-body">
+            <div class="term-full">Barreto-Lynn-Scott 12-381 Elliptic Curve</div>
+            <div class="term-def">A pairing-friendly elliptic curve used by Midnight Network for ZK proof generation. Provides the high security level and pairing operations required by the PLONK proving system.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">JubJub</div>
+          <div class="term-body">
+            <div class="term-full">JubJub Elliptic Curve</div>
+            <div class="term-def">A twisted Edwards curve defined over the BLS12-381 scalar field. Used alongside BLS12-381 in Midnight's proof system for in-circuit operations. Circuit arithmetic over JubJub is significantly more efficient than over general curves.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">DUST</div>
+          <div class="term-body">
+            <div class="term-full">Midnight Network Transaction Fee Token</div>
+            <div class="term-def">The token used to pay transaction fees on Midnight Network. ShieldVIN treats DUST as an internal operational cost — not a revenue stream. All client-facing fees are billed in fiat (USD/GBP/EUR). ShieldVIN holds a DUST reserve internally to cover on-chain transaction costs. On testnet, tDUST is used and generated by delegating tNIGHT in the Lace wallet.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">tNIGHT / tDUST</div>
+          <div class="term-body">
+            <div class="term-full">Testnet NIGHT / Testnet DUST</div>
+            <div class="term-def">Testnet versions of Midnight's tokens. tNIGHT is obtained from the Midnight testnet faucet and delegated in the Lace wallet to generate tDUST, which is used to pay transaction fees on the testnet. Neither has real monetary value.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">ECC</div>
+          <div class="term-body">
+            <div class="term-full">Elliptic Curve Cryptography</div>
+            <div class="term-def">A family of public-key cryptographic algorithms based on the algebraic structure of elliptic curves over finite fields. Both the SE chip signatures (Ed25519) and Midnight's proof system (BLS12-381, JubJub) are based on ECC.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">Compact</div>
+          <div class="term-body">
+            <div class="term-full">Midnight Network Smart Contract Language</div>
+            <div class="term-def">The domain-specific language used to write ZK smart contracts on Midnight Network. Compiled by the Compact Compiler (v0.30.0) to generate circuit artifacts used by the Proof Server. ShieldVIN's on-chain logic is written in Compact in <code>vehicle_identity.compact</code>. Key syntax: <code>export circuit</code>, <code>export ledger</code>, <code>witness</code>, <code>pragma language_version</code>.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">Proof Server</div>
+          <div class="term-body">
+            <div class="term-full">ZK Proof Generation Service</div>
+            <div class="term-def">A local Docker service (<code>midnightntwrk/proof-server</code>) that generates ZK proofs using the compiled Compact circuit. Receives private witness data (the three Ed25519 signatures) from TN-3 and produces a proof for submission to Midnight Network. The Proof Server generates the ZK proof — TN-3 does not.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">persistentHash</div>
+          <div class="term-body">
+            <div class="term-full">SHA-256 Hash Function in Compact</div>
+            <div class="term-def">The Compact built-in function <code>persistentHash&lt;T&gt;(value: T): Bytes&lt;32&gt;</code> — a SHA-256 hash. Used in ShieldVIN circuits for creating tamper-evident commitments (e.g. <code>chassisHash</code>, <code>ownershipHash</code>). Do not use <code>sha256()</code> or <code>transientHash()</code> — these are not valid Compact functions.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="blockchain">
+          <div class="term-abbr">disclose()</div>
+          <div class="term-body">
+            <div class="term-full">Compact Selective Disclosure Wrapper</div>
+            <div class="term-def">A Compact keyword that wraps witness-derived values being written to public ledger fields. Required when a private witness value is promoted to public state. Enables selective disclosure — only the fields explicitly wrapped with <code>disclose()</code> are revealed in the proof output.</div>
+            <span class="term-tag tag-blockchain">Blockchain</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SHIELDVIN STANDARDS ── -->
+    <div class="section" data-section="standard">
+      <div class="section-header">ShieldVIN Standards</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VIT</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Identity Token</div>
+            <div class="term-def">The on-chain record minted on Midnight Network at the point of vehicle manufacture. Contains cryptographic commitments (hashes) of the vehicle's build data and the three SE chip public keys. Serves as the vehicle's permanent, tamper-evident digital identity. A VIT is minted once and follows the vehicle through its entire lifecycle — transfers, service events, and decommissioning are all recorded against it.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VIN</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Identification Number</div>
+            <div class="term-def">A 17-character alphanumeric code defined by ISO 3779 that uniquely identifies a motor vehicle. The VIN is stamped on a metal plate attached to the vehicle. VIN fraud (cloning) involves copying a VIN from a legitimate vehicle onto a stolen one. ShieldVIN makes VIN cloning cryptographically detectable — a cloned VIN plate cannot produce a valid 3-of-3 chip proof.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VSE-1</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Secure Element Standard</div>
+            <div class="term-def">ShieldVIN's proposed hardware specification standard governing the design, placement, tamper response behaviour, and key management requirements of the three SE chips (EN-1, CN-2, TN-3) embedded in ShieldVIN-enrolled vehicles. Defines minimum security requirements for OEM implementation.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VIT-1</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Identity Token Standard</div>
+            <div class="term-def">ShieldVIN's proposed standard governing the on-chain data structure of a Vehicle Identity Token — the ledger fields, data types, lifecycle states (ACTIVE, STOLEN, FLAGGED, RECOVERED, DECOMMISSIONED), and the rules for how each field may be written or updated.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VAP-1</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Authentication Protocol 1</div>
+            <div class="term-def">ShieldVIN's HTTP/JSON API specification for querying and updating a vehicle's VIT. Defines all request/response shapes, endpoint paths, role credentials, rate limits, proof latency SLAs, and error codes. All six portals and the Verification API use VAP-1. The full spec is in <code>src/specs/VAP-1.md</code>.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">VGM-1</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Governance Model 1</div>
+            <div class="term-def">ShieldVIN's proposed W3C-style consortium governance model. Defines how consortium members (OEMs, government agencies, insurers) participate in governing the ShieldVIN system — including credential issuance, fee schedule decisions, standard updates, and new member admissions. The VGM-1 authority issues all VAP-1 role credentials.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">buildSpecHash</div>
+          <div class="term-body">
+            <div class="term-full">Build Specification Hash</div>
+            <div class="term-def">A SHA-256 hash of the vehicle's off-chain build specification record, stored in the VIT at minting. Links the on-chain identity token to the manufacturer's off-chain build data without exposing that data on-chain. Enables third-party verification of build integrity without a data breach risk.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">ownershipHash</div>
+          <div class="term-body">
+            <div class="term-full">Ownership Commitment Hash</div>
+            <div class="term-def">A cryptographic hash commitment representing vehicle ownership on-chain. Stored as <code>Bytes&lt;32&gt;</code>. Computed as H(ownerSecret ∥ salt) — the owner's secret and a salt, never the owner's identity. Owner identity is resolved off-chain by the relevant authority using their own records. No personal data ever reaches the blockchain.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="standard">
+          <div class="term-abbr">factoryCode</div>
+          <div class="term-body">
+            <div class="term-full">Manufacturer Factory Code</div>
+            <div class="term-def">An identifier stored in the VIT at minting that links a vehicle to its manufacturing facility and OEM. Used by the Manufacturer Portal to scope all operations to a manufacturer's own fleet — a manufacturer can only query or manage vehicles with a matching <code>factoryCode</code>.</div>
+            <span class="term-tag tag-standard">Standard</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── MIDNIGHT SDK ── -->
+    <div class="section" data-section="sdk">
+      <div class="section-header">Midnight SDK (Midnight.js 4.x)</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">PrivateStateProvider</div>
+          <div class="term-body">
+            <div class="term-full">Private State Storage Provider</div>
+            <div class="term-def">A Midnight.js SDK provider that manages encrypted private state on-device using AES-256-GCM LevelDB. Stores witness data (e.g. the owner's secret) that is used in ZK proof generation but never submitted to the public ledger.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">PublicDataProvider</div>
+          <div class="term-body">
+            <div class="term-full">Public Ledger Data Provider</div>
+            <div class="term-def">A Midnight.js SDK provider that reads public state from the Midnight Network via the GraphQL Indexer. Used for cached status checks — no ZK proof is needed to read publicly disclosed ledger fields such as vehicle status, transfer count, or mileage.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">ProofProvider</div>
+          <div class="term-body">
+            <div class="term-full">ZK Proof Provider</div>
+            <div class="term-def">A Midnight.js SDK provider that acts as an HTTP client to the local Proof Server. Sends witness data to the Proof Server and receives back the generated ZK proof for inclusion in the transaction.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">WalletProvider</div>
+          <div class="term-body">
+            <div class="term-full">DUST Wallet Provider</div>
+            <div class="term-def">A Midnight.js SDK provider that manages the DUST token balance used to pay on-chain transaction fees. ShieldVIN holds a central DUST reserve managed via this provider — clients never interact with DUST directly.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">MidnightProvider</div>
+          <div class="term-body">
+            <div class="term-full">Transaction Submission Provider</div>
+            <div class="term-def">A Midnight.js SDK provider that submits signed transactions (including the ZK proof) to the Midnight Network node for inclusion in the ledger.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">ZkConfigProvider</div>
+          <div class="term-body">
+            <div class="term-full">ZK Artifacts Configuration Provider</div>
+            <div class="term-def">New in Midnight.js v4. Manages ZK circuit artifacts (proving/verification keys) required by the Proof Server. Browser environments use <code>@midnight-ntwrk/fetch-zk-config-provider</code>; Node.js environments use <code>@midnight-ntwrk/node-zk-config-provider</code>. Required — cannot be omitted in v4.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">Indexer</div>
+          <div class="term-body">
+            <div class="term-full">Midnight Network GraphQL Indexer</div>
+            <div class="term-def">The Midnight Network service (v4.0.1) that indexes public ledger state and exposes it via a GraphQL API. Used by the PublicDataProvider for fast public state reads. ShieldVIN uses the Indexer for cached status queries and real-time status-change notifications (webhook triggers).</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="sdk">
+          <div class="term-abbr">Ledger 8.0</div>
+          <div class="term-body">
+            <div class="term-full">Midnight Network Ledger — Current Stack</div>
+            <div class="term-def">The current Midnight Network software stack (released 2026-03-30). Key versions: Ledger 8.0.3, Node 0.22.3, Proof Server 8.0.3, Compact Runtime 0.15.0, Compact Compiler 0.30.0, Midnight.js 4.0.2, Wallet SDK Facade 3.0.0, Indexer 4.0.1, DApp Connector API 4.0.1. All ShieldVIN development targets this stack.</div>
+            <span class="term-tag tag-sdk">SDK</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── AUTOMOTIVE ── -->
+    <div class="section" data-section="automotive">
+      <div class="section-header">Automotive</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">OEM</div>
+          <div class="term-body">
+            <div class="term-full">Original Equipment Manufacturer</div>
+            <div class="term-def">A vehicle manufacturer that designs and builds vehicles under their own brand (e.g. Toyota, BYD, Ford). In ShieldVIN, OEMs are responsible for embedding the three SE chips during manufacture and minting the VIT at end-of-line. OEMs are billed a per-vehicle minting fee (Stream 1 revenue), tiered by annual production volume.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">VIN Cloning</div>
+          <div class="term-body">
+            <div class="term-full">VIN Fraud — Vehicle Identity Cloning</div>
+            <div class="term-def">A vehicle fraud technique where a criminal copies the VIN plate from a legitimately registered vehicle and applies it to a stolen vehicle of the same make, model, and colour. Accompanied by forged documentation, this allows the stolen vehicle to be sold as legitimate. ShieldVIN eliminates this: a cloned VIN plate cannot produce a valid 3-of-3 hardware proof, so the fraud is detected at the first verification.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">DVLA</div>
+          <div class="term-body">
+            <div class="term-full">Driver and Vehicle Licensing Agency</div>
+            <div class="term-def">The UK government agency responsible for vehicle registration, driving licences, and road tax. A primary government portal user in the UK jurisdiction. Operates under the <code>government</code> VAP-1 role. Billed via enterprise contract (Stream 5), not per-query.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">DMV</div>
+          <div class="term-body">
+            <div class="term-full">Department of Motor Vehicles</div>
+            <div class="term-def">US state government agencies responsible for vehicle registration and driver licensing. A primary government portal user in US jurisdictions. Operates under the <code>government</code> VAP-1 role. Billed via enterprise contract (Stream 5).</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">MOT</div>
+          <div class="term-body">
+            <div class="term-full">Ministry of Transport Test (UK)</div>
+            <div class="term-def">The annual roadworthiness inspection required for vehicles over three years old in the UK. MOT stations are a category of service centre in the ShieldVIN system, using the Dealer &amp; Service Portal to record inspection events and verify vehicle identity.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">body-in-white</div>
+          <div class="term-body">
+            <div class="term-full">Vehicle Assembly Stage — Unpainted Body Shell</div>
+            <div class="term-def">The manufacturing stage where the vehicle's structural body panels and frame are welded together before painting or component installation. The CN-2 Chassis Node is embedded at this stage — before the body is painted and before any trim or interior is installed — making it physically part of the vehicle's structure.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="automotive">
+          <div class="term-abbr">ERP</div>
+          <div class="term-body">
+            <div class="term-full">Enterprise Resource Planning</div>
+            <div class="term-def">Software systems used by large manufacturers (e.g. SAP, Oracle) to manage production, supply chain, inventory, and logistics. At Phase 3, the ShieldVIN Manufacturer Portal will expose an ERP integration API to allow OEMs to trigger VIT minting directly from their production line management systems.</div>
+            <span class="term-tag tag-automotive">Automotive</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── API / PROTOCOL ── -->
+    <div class="section" data-section="api">
+      <div class="section-header">API &amp; Protocol</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">JWT</div>
+          <div class="term-body">
+            <div class="term-full">JSON Web Token</div>
+            <div class="term-def">A compact, URL-safe format for representing claims between parties as a signed JSON object. All VAP-1 role credentials are JWTs issued by the VGM-1 governance authority. Credentials are device-bound and carried in the HTTP <code>Authorization: Bearer</code> header on every API request.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">TTL</div>
+          <div class="term-body">
+            <div class="term-full">Time To Live</div>
+            <div class="term-def">The duration for which a cached result remains valid. In ShieldVIN: cached status certificates have a TTL of 24 hours standard, reduced to 1 hour for any vehicle whose stolen flag has recently been updated. Expired cache entries require a new live ZK proof to refresh.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">nonce</div>
+          <div class="term-body">
+            <div class="term-full">Number Used Once</div>
+            <div class="term-def">A unique random value included in live proof requests to prevent replay attacks. The requester generates the nonce; it is signed by all three SE chips and included in the ZK proof. The nonce is echoed back in the response so the requester can confirm the proof was generated for their specific request and not recycled from a prior proof.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">TLS</div>
+          <div class="term-body">
+            <div class="term-full">Transport Layer Security</div>
+            <div class="term-def">The cryptographic protocol that secures network communications. VAP-1 requires TLS 1.3 as the minimum version for all API connections. No plaintext (HTTP) connections are accepted.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">ISO 3779</div>
+          <div class="term-body">
+            <div class="term-full">International VIN Standard</div>
+            <div class="term-def">The ISO standard defining the format and content of Vehicle Identification Numbers. Specifies the 17-character structure: 3-character World Manufacturer Identifier (WMI), 6-character Vehicle Descriptor Section (VDS), and 8-character Vehicle Identifier Section (VIS). VAP-1 validates all VINs against this format.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">ISO 3166-2</div>
+          <div class="term-body">
+            <div class="term-full">International Country/Subdivision Code Standard</div>
+            <div class="term-def">The ISO standard for country and subdivision codes. Used in VAP-1 requests to specify jurisdiction (e.g. <code>GB-ENG</code> for England, <code>US-CA</code> for California). Jurisdiction codes determine which government authority has access rights and which stolen flag disclosure rules apply.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">OpenAPI</div>
+          <div class="term-body">
+            <div class="term-full">OpenAPI Specification (formerly Swagger)</div>
+            <div class="term-def">A standard format for describing REST APIs in machine-readable form. The ShieldVIN Verification API (api.shieldvin.org) will publish an OpenAPI specification for use by insurer and lender integrations. Available in the API Portal Dashboard alongside SDK downloads.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="api">
+          <div class="term-abbr">Webhook</div>
+          <div class="term-body">
+            <div class="term-full">HTTP Callback for Event Notifications</div>
+            <div class="term-def">An HTTP endpoint registered by an API customer to receive real-time notifications when a specific event occurs. In ShieldVIN, insurers and lenders can register webhooks to be notified when the status of a policy or financed vehicle changes (e.g. a vehicle changes to STOLEN). Triggered by monitoring the Midnight Network GraphQL Indexer for state changes.</div>
+            <span class="term-tag tag-api">API</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── ACCESS ROLES ── -->
+    <div class="section" data-section="role">
+      <div class="section-header">VAP-1 Access Roles</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">manufacturer</div>
+          <div class="term-body">
+            <div class="term-full">OEM Manufacturer Role</div>
+            <div class="term-def">VAP-1 role assigned to vehicle manufacturers. Grants access to the Manufacturer Portal: mint VITs, manage their own fleet, issue recall flags, manage dealer credentials, authorise hardware recovery. Scoped to VINs with a matching <code>factoryCode</code> — a manufacturer cannot query or modify another manufacturer's vehicles. Billed per VIT minted (Stream 1).</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">law_enforcement</div>
+          <div class="term-body">
+            <div class="term-full">Law Enforcement Officer Role</div>
+            <div class="term-def">VAP-1 role assigned to police and border agency personnel. Grants full Government Portal access plus law-enforcement-specific disclosure: when a vehicle status is STOLEN, the VIN is additionally disclosed to this role (withheld for non-stolen vehicles and all other roles). Can file stolen reports and generate signed evidence packs for court submission. Credential issued by national authority via VGM-1.</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">government</div>
+          <div class="term-body">
+            <div class="term-full">Government / DMV / Transport Authority Role</div>
+            <div class="term-def">VAP-1 role assigned to government agencies (DVLA, DMV, transport ministries). Grants Government Portal access: VIN lookup, fleet/batch queries, jurisdiction dashboard, recall visibility, node rotation log, evidence pack export. Higher rate limits than law enforcement. Billed via annual enterprise contract (Stream 5) — never per-query.</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">insurer</div>
+          <div class="term-body">
+            <div class="term-full">Insurer / Finance Lender Role</div>
+            <div class="term-def">VAP-1 role used by both insurance companies and finance lenders for API access. Grants access to the Verification API: status checks, ownership verification, mileage history, and service count. Cannot write to the ledger. Billed per query (Stream 2). Finance lenders use this same role — they are not distinguished at the API level.</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">dealer</div>
+          <div class="term-body">
+            <div class="term-full">Licensed Vehicle Dealer Role</div>
+            <div class="term-def">VAP-1 role for authorised vehicle dealers. Grants Dealer Portal access: identity checks, ownership transfer, hardware recovery initiation, QR code generation, finance verification packs. Service centres share this subscription tier with access scoped to identity checks and service recording — not ownership transfer or finance tools. Billed monthly (Stream 3).</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="role">
+          <div class="term-abbr">owner</div>
+          <div class="term-body">
+            <div class="term-full">Registered Vehicle Owner Role</div>
+            <div class="term-def">VAP-1 role for private vehicle owners. Scoped to vehicles where the holder can prove ownership (knows the ownerSecret preimage for the current ownershipHash). Grants Owner Portal access: identity card, ownership proof generation, stolen reporting, private sale transfers, share QR codes. 1 free identity check per month; $5 per private ownership transfer (Stream 4).</div>
+            <span class="term-tag tag-role">Role</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── REGULATORY ── -->
+    <div class="section" data-section="regulatory">
+      <div class="section-header">Regulatory &amp; Legal</div>
+      <div class="term-list">
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">GDPR</div>
+          <div class="term-body">
+            <div class="term-full">General Data Protection Regulation (EU/UK)</div>
+            <div class="term-def">EU regulation (applied in the UK as UK GDPR post-Brexit) governing the collection, storage, and use of personal data. ShieldVIN is GDPR-compliant by construction: no personal data is stored on-chain. Ownership is represented as a cryptographic hash commitment. ShieldVIN's privacy architecture complies with GDPR Article 25 (data protection by design and by default).</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">CCPA</div>
+          <div class="term-body">
+            <div class="term-full">California Consumer Privacy Act</div>
+            <div class="term-def">US state law (California) governing consumer data privacy rights. ShieldVIN's on-chain zero-personal-data architecture ensures compliance — no consumer data is stored on the blockchain. Off-chain portal data is handled under standard data processor agreements.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">POPIA</div>
+          <div class="term-body">
+            <div class="term-full">Protection of Personal Information Act (South Africa)</div>
+            <div class="term-def">South Africa's data protection law, analogous to GDPR. Relevant as ShieldVIN's founding jurisdiction (South Africa, CIPC registration). ShieldVIN's no-PII-on-chain design is compliant with POPIA's conditions for lawful processing of personal information.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">eIDAS 2.0</div>
+          <div class="term-body">
+            <div class="term-full">Electronic Identification, Authentication and Trust Services (EU)</div>
+            <div class="term-def">EU regulation establishing a framework for electronic identity and trust services. ShieldVIN is pursuing alignment of VAP-1 verification outputs with eIDAS 2.0 verifiable attestation formats. Successful alignment would provide a significant distribution advantage for EU market entry — VAP-1 credentials could be issued as eIDAS-compliant verifiable credentials.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">NMVTIS</div>
+          <div class="term-body">
+            <div class="term-full">National Motor Vehicle Title Information System</div>
+            <div class="term-def">The US federal database of vehicle title, theft, and salvage information. A primary existing system that ShieldVIN complements and supersedes in enrolled jurisdictions. NMVTIS is reactive (depends on timely reporting) and carries no cryptographic proof. ShieldVIN provides real-time, hardware-backed proof.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">CIPC</div>
+          <div class="term-body">
+            <div class="term-full">Companies and Intellectual Property Commission (South Africa)</div>
+            <div class="term-def">The South African government body for company registration and IP rights. ShieldVIN's provisional patent is to be filed with CIPC first (South Africa) before the UK IPO filing — establishing South African priority date. The CIPC provisional patent application must be filed at cipc.co.za before the IPO filing.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">IPO</div>
+          <div class="term-body">
+            <div class="term-full">Intellectual Property Office (UK)</div>
+            <div class="term-def">The UK government body responsible for granting patents, trademarks, and designs. ShieldVIN's UK provisional patent application must be filed with the IPO within 12 months of the CIPC South Africa filing to claim South African priority under the Paris Convention.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+        <div class="term-entry" data-tags="regulatory">
+          <div class="term-abbr">KYC</div>
+          <div class="term-body">
+            <div class="term-full">Know Your Customer</div>
+            <div class="term-def">The process of verifying the identity of a customer before granting access to a service. In ShieldVIN, each portal performs its own off-chain KYC appropriate to the user's role — e.g. a law enforcement agency verifies officer credentials; a dealer verifies business registration. KYC is an off-chain portal concern; no identity data from KYC is stored on-chain.</div>
+            <span class="term-tag tag-regulatory">Regulatory</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="no-results" id="no-results">No terms match your search.</div>
+
+  </div><!-- /glossary-body -->
+
+  <div class="footer">
+    <div>© 2026 <strong style="color:var(--text-s)">MJ Krugell</strong>. All rights reserved.</div>
+    <div>Concept proposal — not licensed for commercial use without permission.</div>
+  </div>
+
+</div>
+
+<script>
+  let activeFilter = 'all';
+
+  function setFilter(tag, btn) {
+    activeFilter = tag;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterTerms();
+  }
+
+  function filterTerms() {
+    const query = document.getElementById('search').value.toLowerCase().trim();
+    const entries = document.querySelectorAll('.term-entry');
+    let visible = 0;
+
+    entries.forEach(entry => {
+      const tags = entry.dataset.tags || '';
+      const text = entry.textContent.toLowerCase();
+
+      const matchesFilter = activeFilter === 'all' || tags.includes(activeFilter);
+      const matchesSearch = !query || text.includes(query);
+
+      if (matchesFilter && matchesSearch) {
+        entry.classList.remove('hidden');
+        visible++;
+      } else {
+        entry.classList.add('hidden');
+      }
+    });
+
+    // Show/hide section headers
+    document.querySelectorAll('.section').forEach(section => {
+      const visibleInSection = section.querySelectorAll('.term-entry:not(.hidden)').length;
+      section.style.display = visibleInSection > 0 ? '' : 'none';
+    });
+
+    document.getElementById('no-results').style.display = visible === 0 ? 'block' : 'none';
+  }
+</script>
+
+</body>
+</html>
